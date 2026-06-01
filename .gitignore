@@ -1,0 +1,11 @@
+# os / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# scratch / build
+*.log
+node_modules/
+dist/
