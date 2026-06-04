@@ -323,8 +323,10 @@ body {
   display:grid;
   grid-template-columns:1fr 1fr;
   align-items:stretch;
-  border-top:1px solid var(--hair);
 }
+
+/* no line between last description panel and the spec section */
+.layout__right .panel:last-child { border-bottom:none; }
 
 .spec-scroll__left {
   padding:10vh 52px 10vh;
