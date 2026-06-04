@@ -320,38 +320,96 @@ body {
    FULL-WIDTH SECTIONS (below split layout)
    ══════════════════════════════════════════ */
 
-/* specs */
-.specs {
-  background:var(--paper);
-  padding:12vh 22px 10vh;
+/* ── specs + video split ── */
+.specs-wrap {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:start;
   border-top:1px solid var(--hair);
 }
+
+.specs-left {
+  padding:8vh 52px 10vh;
+  border-right:1px solid var(--hair);
+}
+
+.specs-right {
+  position:sticky;
+  top:var(--hh);
+  height:calc(100vh - var(--hh));
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px 52px;
+  gap:14px;
+}
+
 .specs__head {
   display:flex; align-items:flex-end; justify-content:space-between;
   border-bottom:1px solid var(--line);
   padding-bottom:18px; flex-wrap:wrap; gap:16px;
+  margin-bottom:0;
 }
 .specs__head h2 {
-  font-family:var(--font); font-weight:500;
-  letter-spacing:-.01em;
-  font-size:clamp(26px,4vw,44px); line-height:1.02;
+  font-family:var(--font); font-weight:400;
+  font-size:clamp(18px,2.2vw,26px); line-height:1.02;
 }
 .specs__head .meta {
   font-family:var(--font); font-size:11px;
-  letter-spacing:.04em; text-align:right;
-  line-height:1.9; color:var(--ink-soft);
+  text-align:right; line-height:1.9; color:var(--ink-soft);
 }
 .spec-row {
-  display:grid; grid-template-columns:190px 1fr;
-  gap:24px; padding:18px 0;
+  display:grid; grid-template-columns:140px 1fr;
+  gap:20px; padding:15px 0;
   border-bottom:1px solid var(--hair);
   align-items:baseline;
 }
 .spec-row dt {
-  font-family:var(--font); font-size:11.5px;
-  letter-spacing:.04em; color:var(--ink-soft);
+  font-family:var(--font); font-size:12px;
+  color:var(--ink-soft);
 }
-.spec-row dd { font-size:16px; line-height:1.5; max-width:640px; }
+.spec-row dd { font-size:13px; line-height:1.5; }
+
+/* ── analog video player ── */
+.video-stage {
+  position:relative;
+  width:100%;
+  background:#111;
+  cursor:pointer;
+  /* aspect ratio set in HTML via inline style to match actual video */
+}
+.video-stage video {
+  width:100%; display:block;
+  aspect-ratio:9/16; /* EDIT: change to 16/9 if landscape video */
+  object-fit:cover;
+}
+
+/* pause overlay — visible at start and when paused */
+.video-cover {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  transition:opacity .25s ease;
+}
+.video-cover.playing {
+  opacity:0; pointer-events:none;
+}
+
+/* two thin vertical bars — the analog "paused" mark */
+.video-pause-mark {
+  display:flex; gap:5px; align-items:center;
+}
+.video-pause-mark span {
+  display:block;
+  width:2px; height:22px;
+  background:rgba(255,255,255,.75);
+}
+
+.video-hint {
+  font-family:var(--font); font-size:11px;
+  color:var(--ink-soft);
+  align-self:flex-start;
+}
 
 /* linkable spec terms */
 dt[data-scroll-to] {
@@ -503,6 +561,12 @@ dt[data-scroll-to]:hover::after {
 
   .sched__grid { grid-template-columns:1fr 1fr; }
   .sched__cell { min-height:94px; }
+
+  /* specs: stack on mobile */
+  .specs-wrap { grid-template-columns:1fr; }
+  .specs-left { border-right:none; padding:40px 22px 32px; }
+  .specs-right { position:relative; top:auto; height:auto; padding:0 22px 40px; }
+  .spec-row { grid-template-columns:110px 1fr; gap:12px; padding:12px 0; }
 
   /* mobile header: 60px height, hide dropdowns */
   .site-header { height:var(--hh-mob); }
@@ -744,29 +808,56 @@ dt[data-scroll-to]:hover::after {
   </div><!-- /layout__right -->
 </div><!-- /layout -->
 
-<!-- ═══════════════ FULL-WIDTH SPECS ═══════════════ -->
-<section class="specs">
-  <div class="specs__head">
-    <h2>the piece, in full</h2>
-    <div class="meta">
-      <!-- EDIT: style code / season -->
-      style no. 01<br>
-      drop 01 — ss26<br>
-      limited run
+<!-- ═══════════════ SPECS + VIDEO ═══════════════ -->
+<section class="specs-wrap">
+
+  <!-- LEFT: spec table -->
+  <div class="specs-left">
+    <div class="specs__head">
+      <h2>the piece, in full</h2>
+      <div class="meta">
+        <!-- EDIT: style code / season -->
+        style no. 01<br>
+        drop 01 — ss26<br>
+        limited run
+      </div>
     </div>
+    <dl>
+      <!--
+        data-scroll-to  → scrolls to that image panel (current behaviour)
+        data-timestamp  → video seek time in seconds (fill in when timestamps are known)
+                          set to -1 = not mapped yet; ≥ 0 = will seek + play video
+      -->
+      <div class="spec-row"><dt data-scroll-to="inside" data-timestamp="-1">silhouette</dt><dd>boxy blouson · dropped shoulder · cropped length · back yoke seam with 2 darts</dd></div>
+      <div class="spec-row"><dt data-scroll-to="pocket" data-timestamp="-1">closure</dt><dd>riri two-way front zip · cobrax snap-fastening stand collar</dd></div>
+      <div class="spec-row"><dt data-scroll-to="cut"    data-timestamp="-1">pockets</dt><dd>two double-entry side pockets (hands + belongings) · one interior pocket</dd></div>
+      <div class="spec-row"><dt data-scroll-to="cloth"  data-timestamp="-1">shell</dt><dd>moleskine · 380 gsm · sourced from japan · pigment-coated, wash finished</dd></div>
+      <div class="spec-row"><dt data-scroll-to="closure" data-timestamp="-1">lining</dt><dd>striped yarn-dyed cupro · 102 gsm</dd></div>
+      <div class="spec-row"><dt data-scroll-to="pocket" data-timestamp="-1">hardware</dt><dd>riri two-way zip · cobrax snaps</dd></div>
+      <div class="spec-row"><dt data-scroll-to="cloth"  data-timestamp="-1">composition</dt><dd>shell: cotton · lining: cupro</dd></div>
+      <div class="spec-row"><dt>care</dt><dd>cold wash · hang dry · expected to age</dd></div>
+    </dl>
   </div>
-  <dl>
-    <!-- EDIT: any spec value below -->
-    <!-- data-scroll-to targets the matching scene panel — see IMAGES map in <script> for slot names -->
-    <div class="spec-row"><dt data-scroll-to="inside">silhouette</dt><dd>boxy blouson · dropped shoulder · cropped length · back yoke seam with 2 darts</dd></div>
-    <div class="spec-row"><dt data-scroll-to="pocket">closure</dt><dd>riri two-way front zip · cobrax snap-fastening stand collar</dd></div>
-    <div class="spec-row"><dt data-scroll-to="cut">pockets</dt><dd>two double-entry side pockets (hands + belongings) · one interior pocket</dd></div>
-    <div class="spec-row"><dt data-scroll-to="cloth">shell</dt><dd>moleskine · 380 gsm · sourced from japan · pigment-coated, wash finished</dd></div>
-    <div class="spec-row"><dt data-scroll-to="closure">lining</dt><dd>striped yarn-dyed cupro · 102 gsm</dd></div>
-    <div class="spec-row"><dt data-scroll-to="pocket">hardware</dt><dd>riri two-way zip · cobrax snaps</dd></div>
-    <div class="spec-row"><dt data-scroll-to="cloth">composition</dt><dd>shell: cotton · lining: cupro</dd></div>
-    <div class="spec-row"><dt>care</dt><dd>cold wash · hang dry · expected to age</dd></div>
-  </dl>
+
+  <!-- RIGHT: analog video panel -->
+  <div class="specs-right">
+    <div class="video-stage" id="videoStage">
+      <!--
+        EDIT: drop your converted file into videos/ and set the src below.
+        Recommended format: MP4, H.264, 1080p max.
+        EDIT: change video aspect-ratio style to 16/9 if landscape.
+      -->
+      <video id="pieceVideo" preload="metadata" playsinline>
+        <source src="videos/piece.mp4" type="video/mp4">
+      </video>
+      <!-- analog pause indicator: two bars shown when paused, hidden when playing -->
+      <div class="video-cover" id="videoCover">
+        <div class="video-pause-mark"><span></span><span></span></div>
+      </div>
+    </div>
+    <p class="video-hint">press to play</p>
+  </div>
+
 </section>
 
 <!-- ═══════════════ PREORDER CTA ═══════════════ -->
@@ -926,13 +1017,54 @@ dt[data-scroll-to]:hover::after {
   updateActivePanel();
   updateParallax();
 
-  /* ── spec row click → scroll to matching scene panel ── */
+  /* ── spec row click ──────────────────────────────────────────
+     If data-timestamp ≥ 0 → seek video to that second and play.
+     If data-timestamp = -1 (not mapped yet) → scroll to image panel.
+     To add timestamps later: set data-timestamp="12.5" etc. on each dt.
+  ────────────────────────────────────────────────────────────── */
+  var pieceVideo = document.getElementById('pieceVideo');
+  var videoCover = document.getElementById('videoCover');
+  var videoStage = document.getElementById('videoStage');
+
+  /* play / pause on stage click */
+  if (videoStage) {
+    videoStage.addEventListener('click', function () {
+      if (!pieceVideo) return;
+      if (pieceVideo.paused) {
+        pieceVideo.play();
+        videoCover.classList.add('playing');
+      } else {
+        pieceVideo.pause();
+        videoCover.classList.remove('playing');
+      }
+    });
+    if (pieceVideo) {
+      pieceVideo.addEventListener('ended', function () {
+        videoCover.classList.remove('playing');
+      });
+    }
+  }
+
+  /* spec row clicks */
   document.querySelectorAll('dt[data-scroll-to]').forEach(function (dt) {
     dt.addEventListener('click', function () {
-      var target = document.querySelector(
-        '.layout__right .panel[data-slot="' + dt.dataset.scrollTo + '"]'
-      );
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      var ts = parseFloat(dt.dataset.timestamp);
+
+      if (ts >= 0 && pieceVideo) {
+        /* timestamp mapped → seek video and play */
+        pieceVideo.currentTime = ts;
+        pieceVideo.play();
+        videoCover.classList.add('playing');
+        /* scroll the specs section into view so the video is visible */
+        var specsWrap = document.querySelector('.specs-wrap');
+        if (specsWrap) specsWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        /* no timestamp yet → scroll to matching image panel */
+        var target = document.querySelector(
+          '.layout__right .panel[data-slot="' + dt.dataset.scrollTo + '"]'
+        );
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     });
   });
 
