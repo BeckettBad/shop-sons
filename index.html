@@ -316,71 +316,44 @@ body {
 /* mobile image inside each panel (hidden on desktop) */
 .panel__mobile-img { display:none; }
 
-/* ══════════════════════════════════════════════════════
-   SPEC SCROLL SECTION
-   mirrors image section: sticky media right, panels left
-   ══════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   SPEC SECTION — spec table left, video right
+   ══════════════════════════════════════════ */
 .spec-scroll {
   display:grid;
   grid-template-columns:1fr 1fr;
-  align-items:start;
+  align-items:stretch;
   border-top:1px solid var(--hair);
 }
 
-/* left: scrollable spec panels */
 .spec-scroll__left {
+  padding:10vh 52px 10vh;
   border-right:1px solid var(--hair);
 }
 
-/* right: sticky video — identical to .layout__left */
 .spec-scroll__right {
-  position:sticky;
-  top:var(--hh);
-  height:calc(100vh - var(--hh));
-  overflow:hidden;
-  background:#1a1a1a;
+  background:#111;
+  position:relative;
+  min-height:300px;
 }
 
-/* spec content panels — same sizing as .panel in image section */
-.spec-panel {
-  min-height:calc(100vh - var(--hh));
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  padding:8vh 52px 8vh;
-  border-bottom:1px solid var(--hair);
-  scroll-margin-top:var(--hh);
-  /* reveal on scroll — starts hidden, JS adds .in */
-  opacity:0;
-  transform:translateY(20px);
-  transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1);
+.specs__head {
+  display:flex; align-items:flex-end; justify-content:space-between;
+  border-bottom:1px solid var(--line);
+  padding-bottom:18px; flex-wrap:wrap; gap:16px;
 }
-.spec-panel.in {
-  opacity:1;
-  transform:translateY(0);
-}
-
-.spec-panel__tag {
-  font-family:var(--font); font-size:10.5px;
-  color:var(--ink-soft); margin-bottom:28px;
-  display:flex; align-items:center; gap:13px;
-}
-.spec-panel__tag .rule { width:18px; height:1px; background:var(--hair); flex-shrink:0; }
-
-.spec-panel__h {
+.specs__head h2 {
   font-family:var(--font); font-weight:400;
-  font-size:clamp(20px,2.4vw,30px); line-height:1.05;
-  margin-bottom:8px;
+  font-size:clamp(20px,2.5vw,32px); line-height:1.02;
 }
-
-.spec-panel__meta {
-  font-size:11px; color:var(--ink-soft);
-  margin-bottom:28px;
+.specs__head .meta {
+  font-family:var(--font); font-size:11px;
+  text-align:right; line-height:1.9; color:var(--ink-soft);
 }
 
 .spec-row {
-  display:grid; grid-template-columns:130px 1fr;
-  gap:18px; padding:14px 0;
+  display:grid; grid-template-columns:140px 1fr;
+  gap:20px; padding:16px 0;
   border-bottom:1px solid var(--hair);
   align-items:baseline;
 }
@@ -388,19 +361,19 @@ body {
   font-family:var(--font); font-size:12px;
   color:var(--ink-soft);
 }
-.spec-row dd { font-size:13px; line-height:1.5; }
+.spec-row dd { font-size:13px; line-height:1.6; }
 
 /* ── analog video player ── */
 .video-stage {
   position:absolute; inset:0;
-  background:#1a1a1a;
+  background:#111;
   cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
 }
 .video-stage video {
   width:100%; height:100%;
   display:block;
-  object-fit:cover;
-  object-position:center 15%;
+  object-fit:contain; /* full frame visible — no cropping */
 }
 
 /* pause overlay — visible at start and when paused */
@@ -585,12 +558,11 @@ dt[data-scroll-to]:hover::after {
   .sched__grid { grid-template-columns:1fr 1fr; }
   .sched__cell { min-height:94px; }
 
-  /* spec scroll: stack on mobile */
+  /* spec section: stack on mobile */
   .spec-scroll { grid-template-columns:1fr; }
-  .spec-scroll__right { position:relative; top:auto; height:60vw; }
-  .spec-scroll__left { border-right:none; }
-  .spec-panel { min-height:auto; padding:48px 22px 40px; opacity:1; transform:none; }
-  .spec-row { grid-template-columns:100px 1fr; gap:10px; padding:11px 0; }
+  .spec-scroll__left { border-right:none; padding:48px 22px 40px; }
+  .spec-scroll__right { min-height:70vw; }
+  .spec-row { grid-template-columns:100px 1fr; gap:10px; padding:12px 0; }
 
   /* mobile header: 60px height, hide dropdowns */
   .site-header { height:var(--hh-mob); }
@@ -832,60 +804,40 @@ dt[data-scroll-to]:hover::after {
   </div><!-- /layout__right -->
 </div><!-- /layout -->
 
-<!-- ═══════════════════════════════════════════════════════
-     SPEC SCROLL — mirrors image section
-     Left: three scroll panels  |  Right: sticky video
-     ═══════════════════════════════════════════════════════ -->
+<!-- ═══════════════ SPECS + VIDEO ═══════════════ -->
 <div class="spec-scroll">
 
-  <!-- ── LEFT: spec panels ── -->
+  <!-- LEFT: spec table -->
   <div class="spec-scroll__left">
-
-    <!-- PANEL 1 · construction -->
-    <section class="spec-panel" id="spec-construction">
-      <div class="spec-panel__tag"><span class="rule"></span>the piece, in full</div>
-      <h2 class="spec-panel__h">construction</h2>
-      <!-- EDIT: style / season -->
-      <p class="spec-panel__meta">style no. 01 · drop 01 — ss26 · limited run</p>
-      <dl>
-        <!--
-          data-timestamp → fill in seconds when video timestamps are known.
-          -1 = not mapped yet (falls back to scroll-to-image-panel behaviour).
-          ≥ 0 = seeks video to that second and plays.
-        -->
-        <div class="spec-row"><dt data-scroll-to="inside" data-timestamp="-1">silhouette</dt><dd>boxy blouson · dropped shoulder · cropped length · back yoke seam with 2 darts</dd></div>
-        <div class="spec-row"><dt data-scroll-to="pocket" data-timestamp="-1">closure</dt><dd>riri two-way front zip · cobrax snap-fastening stand collar</dd></div>
-      </dl>
-    </section>
-
-    <!-- PANEL 2 · materials -->
-    <section class="spec-panel" id="spec-materials">
-      <div class="spec-panel__tag"><span class="rule"></span>materials</div>
-      <h2 class="spec-panel__h">what it's made of</h2>
-      <dl>
-        <div class="spec-row"><dt data-scroll-to="cloth"   data-timestamp="-1">shell</dt><dd>moleskine · 380 gsm · sourced from japan · pigment-coated, wash finished</dd></div>
-        <div class="spec-row"><dt data-scroll-to="closure" data-timestamp="-1">lining</dt><dd>striped yarn-dyed cupro · 102 gsm</dd></div>
-        <div class="spec-row"><dt data-scroll-to="cloth"   data-timestamp="-1">composition</dt><dd>shell: cotton · lining: cupro</dd></div>
-      </dl>
-    </section>
-
-    <!-- PANEL 3 · details -->
-    <section class="spec-panel" id="spec-details">
-      <div class="spec-panel__tag"><span class="rule"></span>details</div>
-      <h2 class="spec-panel__h">the details</h2>
-      <dl>
-        <div class="spec-row"><dt data-scroll-to="cut"    data-timestamp="-1">pockets</dt><dd>two double-entry side pockets (hands + belongings) · one interior pocket</dd></div>
-        <div class="spec-row"><dt data-scroll-to="pocket" data-timestamp="-1">hardware</dt><dd>riri two-way zip · cobrax snaps</dd></div>
-        <div class="spec-row"><dt>care</dt><dd>cold wash · hang dry · expected to age</dd></div>
-      </dl>
-    </section>
-
+    <div class="specs__head">
+      <h2>the piece, in full</h2>
+      <div class="meta">
+        <!-- EDIT: style / season -->
+        style no. 01<br>
+        drop 01 — ss26<br>
+        limited run
+      </div>
+    </div>
+    <dl>
+      <!--
+        data-timestamp → set to seconds when video timestamps are known (≥ 0 seeks + plays).
+        -1 = not mapped yet, falls back to scrolling to the image panel.
+      -->
+      <div class="spec-row"><dt data-scroll-to="inside" data-timestamp="-1">silhouette</dt><dd>boxy blouson · dropped shoulder · cropped length · back yoke seam with 2 darts</dd></div>
+      <div class="spec-row"><dt data-scroll-to="pocket" data-timestamp="-1">closure</dt><dd>riri two-way front zip · cobrax snap-fastening stand collar</dd></div>
+      <div class="spec-row"><dt data-scroll-to="cut"    data-timestamp="-1">pockets</dt><dd>two double-entry side pockets (hands + belongings) · one interior pocket</dd></div>
+      <div class="spec-row"><dt data-scroll-to="cloth"  data-timestamp="-1">shell</dt><dd>moleskine · 380 gsm · sourced from japan · pigment-coated, wash finished</dd></div>
+      <div class="spec-row"><dt data-scroll-to="closure" data-timestamp="-1">lining</dt><dd>striped yarn-dyed cupro · 102 gsm</dd></div>
+      <div class="spec-row"><dt data-scroll-to="pocket" data-timestamp="-1">hardware</dt><dd>riri two-way zip · cobrax snaps</dd></div>
+      <div class="spec-row"><dt data-scroll-to="cloth"  data-timestamp="-1">composition</dt><dd>shell: cotton · lining: cupro</dd></div>
+      <div class="spec-row"><dt>care</dt><dd>cold wash · hang dry · expected to age</dd></div>
+    </dl>
   </div>
 
-  <!-- ── RIGHT: sticky video (no zoom — locked in place) ── -->
+  <!-- RIGHT: video — fully displayed, no cropping -->
   <div class="spec-scroll__right">
     <div class="video-stage" id="videoStage">
-      <!-- EDIT: replace videos/piece.mp4 with updated file if needed -->
+      <!-- EDIT: replace src if video file changes -->
       <video id="pieceVideo" preload="metadata" playsinline muted>
         <source src="videos/piece.mp4" type="video/mp4">
       </video>
@@ -1034,18 +986,6 @@ dt[data-scroll-to]:hover::after {
     }
   }
 
-  /* reveal spec panels as they scroll into the lower half of the viewport */
-  var specPanels = Array.prototype.slice.call(
-    document.querySelectorAll('.spec-panel')
-  );
-  function updateSpecPanels() {
-    var trigger = vh * 0.82; /* reveal when panel top crosses 82% down */
-    specPanels.forEach(function(p) {
-      if (p.getBoundingClientRect().top < trigger) {
-        p.classList.add('in');
-      }
-    });
-  }
 
   var ticking = false;
   function onScroll() {
@@ -1056,7 +996,6 @@ dt[data-scroll-to]:hover::after {
         updateProgress();
         updateActivePanel();
         updateParallax();
-        updateSpecPanels();
       });
     }
   }
@@ -1068,7 +1007,6 @@ dt[data-scroll-to]:hover::after {
   updateProgress();
   updateActivePanel();
   updateParallax();
-  updateSpecPanels();
 
   /* ── spec row click ──────────────────────────────────────────
      If data-timestamp ≥ 0 → seek video to that second and play.
