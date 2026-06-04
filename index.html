@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <!--
-  ============================================================
-  shop and son — pre-order mockup / drop 01
-  single-file proposal mockup. photos embedded inline.
+  shop and son — drop 01
+  ══════════════════════════════════════════════════════════
+  TO SWAP IMAGES: find the IMAGES object in the <script>
+  at the bottom. Change the file path next to each key.
+  Every image on the left panel is controlled from there.
 
-  >>> to edit copy: search for  EDIT:  to find every text field
-      (piece name, price, release date, fabric %, etc).
-  styling follows shopandson.com: lowercase, quiet, neutral.
-  ============================================================
+  TO EDIT COPY: search for  EDIT:  to find every text field.
+  ══════════════════════════════════════════════════════════
 -->
 <html lang="en">
 <head>
@@ -15,155 +15,387 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>shop and son — drop 01</title>
 <style>
-:root{
-  --paper:#efe9dd;       /* warm off-white paper        */
-  --paper-2:#e7e0d2;     /* slightly deeper paper       */
-  --ink:#211e19;         /* near-black ink              */
-  --ink-soft:#5a554b;    /* soft ink for body copy      */
-  --accent:#8a5234;      /* muted terracotta, used tiny */
-  --line:#211e19;        /* hairline rule               */
-  --hair:rgba(33,30,25,.18);
-  --mono:ui-monospace,"SFMono-Regular",Menlo,"Courier New",monospace;
-  --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+:root {
+  --paper:    #efe9dd;
+  --paper-2:  #e7e0d2;
+  --ink:      #211e19;
+  --ink-soft: #5a554b;
+  --accent:   #8a5234;
+  --line:     #211e19;
+  --hair:     rgba(33,30,25,.18);
+  --mono: ui-monospace,"SFMono-Regular",Menlo,"Courier New",monospace;
+  --sans: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  --hh: 46px; /* header height */
 }
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:auto}
-body{
-  background:var(--paper);
-  color:var(--ink);
-  font-family:var(--sans);
-  font-weight:400;
-  -webkit-font-smoothing:antialiased;
-  text-rendering:optimizeLegibility;
-  overflow-x:hidden;
+
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:auto; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
-/* faint film grain — barely there */
-.grain{
-  position:fixed;inset:0;z-index:90;pointer-events:none;
-  opacity:.035;mix-blend-mode:multiply;
+
+/* grain overlay */
+.grain {
+  position:fixed; inset:0; z-index:90; pointer-events:none;
+  opacity:.035; mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* ---------------- fixed header ---------------- */
-.hud{
-  position:fixed;top:0;left:0;right:0;z-index:80;
-  display:flex;justify-content:space-between;align-items:center;
-  padding:15px 22px;
-  font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+/* ── header ── */
+.hud {
+  position:fixed; top:0; left:0; right:0; z-index:80;
+  display:flex; justify-content:space-between; align-items:center;
+  height:var(--hh); padding:0 22px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.06em;
   border-bottom:1px solid var(--hair);
   background:var(--paper);
 }
-.hud a{color:inherit;text-decoration:none}
-.hud__r{display:flex;gap:22px;align-items:center;color:var(--ink-soft)}
-.hud__r .pct{color:var(--ink)}
-@media(max-width:560px){.hud{font-size:10px;padding:12px 14px}.hud__r{gap:13px}}
+.hud a { color:inherit; text-decoration:none; }
+.hud__r { display:flex; gap:22px; align-items:center; color:var(--ink-soft); }
+.hud__r .pct { color:var(--ink); }
 
-/* thin scroll progress line */
-.prog{position:fixed;left:0;top:0;height:1px;background:var(--accent);z-index:81;width:0;opacity:.7}
-
-/* ---------------- intro / hero ---------------- */
-.intro{height:100vh;position:relative;display:flex;flex-direction:column;justify-content:flex-end;
-  padding:0 22px 7vh;overflow:hidden}
-.intro__img{position:absolute;inset:0;z-index:0}
-.intro__img img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;
-  filter:saturate(.92) contrast(1.01);}
-.intro__scrim{position:absolute;inset:0;z-index:1;
-  background:linear-gradient(180deg,rgba(239,233,221,.18) 0%,rgba(239,233,221,0) 26%,rgba(33,30,25,.04) 58%,rgba(239,233,221,.9) 100%);}
-.intro__inner{position:relative;z-index:2;max-width:1100px}
-.kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;
-  margin-bottom:16px;display:flex;align-items:center;gap:11px;color:var(--ink-soft)}
-.kicker .dot{width:6px;height:6px;background:var(--accent);border-radius:50%;display:inline-block}
-.title{
-  font-family:var(--sans);font-weight:500;line-height:1.0;letter-spacing:-.015em;
-  font-size:clamp(34px,7vw,78px);
+.prog {
+  position:fixed; left:0; top:var(--hh); height:1px;
+  background:var(--accent); z-index:81; width:0; opacity:.7;
 }
-.subt{margin-top:16px;max-width:430px;font-size:15px;line-height:1.55;color:var(--ink-soft)}
-.scrollcue{font-family:var(--mono);font-size:11px;letter-spacing:.05em;
-  margin-top:30px;display:flex;align-items:center;gap:10px;color:var(--ink-soft)}
-.scrollcue .bar{width:1px;height:30px;background:var(--hair);display:inline-block;position:relative;overflow:hidden}
-.scrollcue .bar::after{content:"";position:absolute;left:0;top:-30px;width:1px;height:30px;background:var(--accent);
-  animation:drop 2s cubic-bezier(.7,0,.3,1) infinite}
-@keyframes drop{0%{top:-30px}55%,100%{top:30px}}
 
-/* ---------------- scroll scenes ---------------- */
-.scene{position:relative;height:300vh}
-.scene__sticky{position:sticky;top:0;height:100vh;overflow:hidden;background:#cfc7b7}
-.scene__img{position:absolute;inset:0;will-change:transform}
-.scene__img img{width:100%;height:100%;object-fit:cover;filter:saturate(.9) contrast(1.02);}
-.scene__sticky::after{content:"";position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(20,16,12,.1),rgba(20,16,12,0) 30%,rgba(20,16,12,0) 52%,rgba(20,16,12,.5));}
+/* ══════════════════════════════════════════
+   SPLIT LAYOUT
+   left  = sticky image panel
+   right = scrollable editorial panels
+   ══════════════════════════════════════════ */
+.layout {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:start;
+  margin-top:var(--hh);
+}
 
-/* small index numeral */
-.scene__num{position:absolute;z-index:3;left:22px;top:80px;
-  font-family:var(--mono);font-size:12px;letter-spacing:.06em;
-  color:var(--paper);opacity:.85;}
-.scene__num b{color:var(--accent);font-weight:400}
+/* ── left: sticky image ── */
+.layout__left {
+  position:sticky;
+  top:var(--hh);
+  height:calc(100vh - var(--hh));
+  overflow:hidden;
+  background:#b4ac9c;
+}
 
-/* callout — quiet, lower-left */
-.callout{position:absolute;z-index:4;left:22px;bottom:8vh;max-width:400px;
-  opacity:0;transform:translateY(18px);}
-.callout.in{opacity:1;transform:translateY(0);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
-.callout__tag{font-family:var(--mono);font-size:11px;letter-spacing:.05em;
-  color:rgba(239,233,221,.85);display:flex;align-items:center;gap:9px;margin-bottom:12px}
-.callout__tag .rule{height:1px;width:26px;background:rgba(239,233,221,.55)}
-.callout__h{font-family:var(--sans);font-weight:500;letter-spacing:-.01em;
-  font-size:clamp(23px,3vw,34px);line-height:1.05;color:var(--paper)}
-.callout__p{margin-top:12px;font-size:14.5px;line-height:1.6;color:rgba(239,233,221,.82);max-width:370px}
-@media(max-width:560px){.callout{right:18px;left:18px;bottom:7vh}.scene__num{top:70px;left:16px}}
+.img-stage {
+  position:relative;
+  width:100%; height:100%;
+}
 
-/* vertical ticker on each scene */
-.scene__meta{position:absolute;z-index:4;right:20px;top:50%;transform:translateY(-50%) rotate(180deg);
-  writing-mode:vertical-rl;font-family:var(--mono);font-size:10px;letter-spacing:.16em;
-  color:rgba(239,233,221,.6)}
-@media(max-width:560px){.scene__meta{display:none}}
+/* all image slots stacked; JS adds/removes .active */
+.img-slot {
+  position:absolute; inset:0;
+  opacity:0;
+  transition:opacity .85s cubic-bezier(.4,0,.2,1);
+}
+.img-slot.active { opacity:1; }
 
-/* ---------------- spec block ---------------- */
-.specs{background:var(--paper);padding:13vh 22px 11vh;position:relative}
-.specs__head{display:flex;align-items:flex-end;justify-content:space-between;
-  border-bottom:1px solid var(--line);padding-bottom:18px;flex-wrap:wrap;gap:16px}
-.specs__head h2{font-family:var(--sans);font-weight:500;letter-spacing:-.01em;
-  font-size:clamp(26px,4vw,44px);line-height:1.02}
-.specs__head .meta{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-align:right;line-height:1.9;color:var(--ink-soft)}
-.spec-row{display:grid;grid-template-columns:190px 1fr;gap:24px;
-  padding:18px 0;border-bottom:1px solid var(--hair);align-items:baseline}
-.spec-row dt{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--ink-soft)}
-.spec-row dd{font-size:16px;line-height:1.5;max-width:640px}
-@media(max-width:560px){.spec-row{grid-template-columns:1fr;gap:5px;padding:15px 0}.spec-row dd{font-size:15px}}
+.img-slot img {
+  width:100%; height:100%;
+  object-fit:cover;
+  object-position:50% 40%;
+  filter:saturate(.9) contrast(1.01);
+  transform-origin:50% 40%;
+  will-change:transform;
+}
 
-/* ---------------- preorder CTA ---------------- */
-.cta{background:var(--paper-2);color:var(--ink);padding:14vh 22px;position:relative;
-  border-top:1px solid var(--hair)}
-.cta__inner{position:relative;z-index:2;max-width:760px;margin:0 auto;text-align:center}
-.cta .kicker{justify-content:center}
-.cta h2{font-family:var(--sans);font-weight:500;letter-spacing:-.015em;
-  font-size:clamp(30px,6vw,64px);line-height:1.0;margin:4px 0 4px}
-.cta__price{font-family:var(--mono);font-size:14px;letter-spacing:.04em;margin:22px 0 6px}
-.cta__price s{opacity:.45;margin-right:11px}
-.cta__sub{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--ink-soft)}
-.btn{display:inline-block;margin-top:30px;border:1px solid var(--ink);color:var(--paper);background:var(--ink);
-  font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;
-  padding:16px 40px;cursor:pointer;transition:background .25s,color .25s}
-.btn:hover{background:transparent;color:var(--ink)}
-.cta__note{margin-top:20px;font-family:var(--mono);font-size:11px;letter-spacing:.03em;color:var(--ink-soft)}
+/* gradient vignette at bottom of image */
+.img-vignette {
+  position:absolute; inset:0; z-index:2; pointer-events:none;
+  background:linear-gradient(180deg,
+    rgba(33,30,25,.08) 0%,
+    transparent 28%,
+    transparent 58%,
+    rgba(33,30,25,.42) 100%);
+}
 
-/* drop schedule strip */
-.sched{background:var(--paper);padding:9vh 22px;border-top:1px solid var(--hair)}
-.sched h3{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;margin-bottom:24px;color:var(--ink-soft)}
-.sched__grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair)}
-.sched__cell{background:var(--paper);padding:18px 15px;min-height:118px;display:flex;flex-direction:column;justify-content:space-between}
-.sched__cell .wk{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--ink-soft)}
-.sched__cell .nm{font-family:var(--sans);font-weight:500;font-size:16px;line-height:1.1;letter-spacing:-.005em}
-.sched__cell.active{background:var(--ink);color:var(--paper)}
-.sched__cell.active .wk{color:var(--accent)}
-.sched__cell .st{font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;color:var(--ink-soft)}
-.sched__cell.active .st{color:rgba(239,233,221,.6)}
-@media(max-width:680px){.sched__grid{grid-template-columns:1fr 1fr}.sched__cell{min-height:94px}}
+/* scene number — top left of image */
+.img-num {
+  position:absolute; top:22px; left:24px; z-index:3;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.08em;
+  color:rgba(239,233,221,.6);
+  transition:opacity .5s ease;
+}
+
+/* label — bottom left of image */
+.img-label {
+  position:absolute; bottom:24px; left:24px; z-index:3;
+  font-family:var(--mono); font-size:10px; letter-spacing:.09em;
+  color:rgba(239,233,221,.65);
+  transition:opacity .5s ease;
+}
+
+/* ── right: scrollable panels ── */
+.layout__right {
+  border-left:1px solid var(--hair);
+}
+
+.panel {
+  min-height:calc(100vh - var(--hh));
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:8vh 52px 8vh;
+  border-bottom:1px solid var(--hair);
+  position:relative;
+}
+
+/* panel elements */
+.panel__kicker {
+  font-family:var(--mono); font-size:11px; letter-spacing:.06em;
+  color:var(--ink-soft); margin-bottom:20px;
+  display:flex; align-items:center; gap:10px;
+}
+.panel__kicker .dot {
+  width:5px; height:5px;
+  background:var(--accent); border-radius:50%; flex-shrink:0;
+}
+
+.panel__tag {
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.08em;
+  color:var(--ink-soft); margin-bottom:30px;
+  display:flex; align-items:center; gap:13px;
+}
+.panel__tag .rule { width:18px; height:1px; background:var(--hair); flex-shrink:0; }
+
+.panel__h {
+  font-family:var(--sans); font-weight:500;
+  letter-spacing:-.014em; line-height:1.04;
+  font-size:clamp(24px,3.2vw,42px);
+  margin-bottom:20px;
+}
+
+.panel__p {
+  font-size:15.5px; line-height:1.68;
+  color:var(--ink-soft); max-width:400px;
+}
+
+.panel__note {
+  margin-top:30px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.05em;
+  color:var(--ink-soft);
+  display:flex; align-items:center; gap:9px;
+}
+.panel__note .bullet { color:var(--accent); font-size:9px; }
+
+/* intro panel overrides */
+.panel--intro { padding-top:9vh; }
+.panel--intro .panel__h {
+  font-size:clamp(28px,4.2vw,54px);
+  margin-bottom:14px;
+}
+
+.panel__price {
+  font-family:var(--mono); font-size:13px; letter-spacing:.04em;
+  margin:18px 0 8px;
+}
+.panel__price s { opacity:.38; margin-right:9px; }
+
+.panel__ship {
+  font-family:var(--mono); font-size:11px; letter-spacing:.04em;
+  color:var(--ink-soft);
+}
+
+/* scroll cue */
+.scrollcue {
+  font-family:var(--mono); font-size:11px; letter-spacing:.05em;
+  margin-top:36px;
+  display:flex; align-items:center; gap:10px;
+  color:var(--ink-soft);
+}
+.scrollcue .bar {
+  width:1px; height:26px;
+  background:var(--hair);
+  position:relative; overflow:hidden; flex-shrink:0;
+}
+.scrollcue .bar::after {
+  content:''; position:absolute; left:0; top:-26px;
+  width:1px; height:26px; background:var(--accent);
+  animation:drop 2s cubic-bezier(.7,0,.3,1) infinite;
+}
+@keyframes drop { 0%{top:-26px} 55%,100%{top:26px} }
+
+/* mobile image inside each panel (hidden on desktop) */
+.panel__mobile-img { display:none; }
+
+/* ══════════════════════════════════════════
+   FULL-WIDTH SECTIONS (below split layout)
+   ══════════════════════════════════════════ */
+
+/* specs */
+.specs {
+  background:var(--paper);
+  padding:12vh 22px 10vh;
+  border-top:1px solid var(--hair);
+}
+.specs__head {
+  display:flex; align-items:flex-end; justify-content:space-between;
+  border-bottom:1px solid var(--line);
+  padding-bottom:18px; flex-wrap:wrap; gap:16px;
+}
+.specs__head h2 {
+  font-family:var(--sans); font-weight:500;
+  letter-spacing:-.01em;
+  font-size:clamp(26px,4vw,44px); line-height:1.02;
+}
+.specs__head .meta {
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.04em; text-align:right;
+  line-height:1.9; color:var(--ink-soft);
+}
+.spec-row {
+  display:grid; grid-template-columns:190px 1fr;
+  gap:24px; padding:18px 0;
+  border-bottom:1px solid var(--hair);
+  align-items:baseline;
+}
+.spec-row dt {
+  font-family:var(--mono); font-size:11.5px;
+  letter-spacing:.04em; color:var(--ink-soft);
+}
+.spec-row dd { font-size:16px; line-height:1.5; max-width:640px; }
+
+/* CTA */
+.cta {
+  background:var(--paper-2);
+  padding:14vh 22px;
+  border-top:1px solid var(--hair);
+  text-align:center;
+}
+.cta__inner { max-width:640px; margin:0 auto; }
+
+.kicker {
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.06em;
+  color:var(--ink-soft);
+  display:flex; align-items:center; gap:11px; margin-bottom:16px;
+}
+.kicker.center { justify-content:center; }
+.kicker .dot { width:6px; height:6px; background:var(--accent); border-radius:50%; }
+
+.cta h2 {
+  font-family:var(--sans); font-weight:500;
+  letter-spacing:-.015em;
+  font-size:clamp(30px,6vw,60px); line-height:1.0;
+}
+.cta__price {
+  font-family:var(--mono); font-size:14px;
+  letter-spacing:.04em; margin:22px 0 6px;
+}
+.cta__price s { opacity:.45; margin-right:11px; }
+.cta__sub {
+  font-family:var(--mono); font-size:12px;
+  letter-spacing:.04em; color:var(--ink-soft);
+}
+.btn {
+  display:inline-block; margin-top:30px;
+  border:1px solid var(--ink); color:var(--paper); background:var(--ink);
+  font-family:var(--mono); font-size:12.5px; letter-spacing:.06em;
+  padding:16px 40px; cursor:pointer;
+  transition:background .25s,color .25s;
+}
+.btn:hover { background:transparent; color:var(--ink); }
+.cta__note {
+  margin-top:20px;
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.03em; color:var(--ink-soft);
+}
+
+/* drop schedule */
+.sched {
+  background:var(--paper);
+  padding:9vh 22px;
+  border-top:1px solid var(--hair);
+}
+.sched h3 {
+  font-family:var(--mono); font-size:11.5px;
+  letter-spacing:.06em; margin-bottom:24px; color:var(--ink-soft);
+}
+.sched__grid {
+  display:grid; grid-template-columns:repeat(5,1fr);
+  gap:1px; background:var(--hair); border:1px solid var(--hair);
+}
+.sched__cell {
+  background:var(--paper); padding:18px 15px; min-height:118px;
+  display:flex; flex-direction:column; justify-content:space-between;
+}
+.sched__cell .wk {
+  font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.05em; color:var(--ink-soft);
+}
+.sched__cell .nm {
+  font-family:var(--sans); font-weight:500;
+  font-size:16px; line-height:1.1; letter-spacing:-.005em;
+}
+.sched__cell.active { background:var(--ink); color:var(--paper); }
+.sched__cell.active .wk { color:var(--accent); }
+.sched__cell .st {
+  font-family:var(--mono); font-size:9.5px;
+  letter-spacing:.04em; color:var(--ink-soft);
+}
+.sched__cell.active .st { color:rgba(239,233,221,.6); }
 
 /* footer */
-.foot{background:var(--paper);padding:38px 22px;border-top:1px solid var(--line);
-  display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;
-  font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--ink-soft)}
-.foot em{font-style:italic}
+.foot {
+  background:var(--paper); padding:38px 22px;
+  border-top:1px solid var(--line);
+  display:flex; justify-content:space-between;
+  flex-wrap:wrap; gap:14px;
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.04em; color:var(--ink-soft);
+}
+.foot em { font-style:italic; }
+
+/* ══════════════════════════════════════════
+   MOBILE — single column, inline images
+   ══════════════════════════════════════════ */
+@media(max-width:768px){
+  .layout {
+    grid-template-columns:1fr;
+    margin-top:0;
+  }
+  .layout__left { display:none; }
+  .layout__right { border-left:none; }
+
+  .panel {
+    min-height:auto;
+    padding:48px 22px 52px;
+    justify-content:flex-start;
+    border-bottom:1px solid var(--hair);
+  }
+  .panel--intro { padding-top:88px; min-height:100svh; }
+
+  .panel__mobile-img {
+    display:block;
+    width:100%; aspect-ratio:4/3;
+    object-fit:cover;
+    filter:saturate(.9) contrast(1.01);
+    margin-bottom:32px;
+  }
+
+  .panel__h { font-size:clamp(22px,6vw,34px); }
+  .panel--intro .panel__h { font-size:clamp(26px,8vw,44px); }
+  .panel__p { font-size:15px; max-width:none; }
+
+  .spec-row { grid-template-columns:1fr; gap:5px; padding:15px 0; }
+  .spec-row dd { font-size:15px; }
+
+  .sched__grid { grid-template-columns:1fr 1fr; }
+  .sched__cell { min-height:94px; }
+}
+
+@media(max-width:560px){
+  .hud { font-size:10px; padding:0 14px; }
+  .hud__r { gap:13px; }
+}
 </style>
 </head>
 <body>
@@ -171,7 +403,7 @@ body{
 <div class="grain"></div>
 <div class="prog" id="prog"></div>
 
-<!-- ================= HEADER ================= -->
+<!-- ═══════════════ HEADER ═══════════════ -->
 <header class="hud">
   <div>shop and son</div>
   <div class="hud__r">
@@ -181,96 +413,156 @@ body{
   </div>
 </header>
 
-<!-- ================= INTRO ================= -->
-<section class="intro">
-  <div class="intro__img"><img src="images/hero.jpg" alt="washed canvas blouson, front"></div>
-  <div class="intro__scrim"></div>
-  <div class="intro__inner">
-    <div class="kicker"><span class="dot"></span>week 01 · pre-order open</div>
-    <!-- EDIT: piece name -->
-    <h1 class="title">washed canvas blouson</h1>
-    <!-- EDIT: one-line intro -->
-    <p class="subt">garment-dyed cotton canvas, cut boxy, built around a double-entry pocket. one of five pieces — a new one each week.</p>
-    <div class="scrollcue"><span class="bar"></span>scroll to look closer</div>
-  </div>
-</section>
+<!-- ═══════════════════════════════════════════════════════
+     SPLIT LAYOUT
+     Left  → sticky image panel (images injected by JS)
+     Right → scrollable editorial panels
+     ═══════════════════════════════════════════════════════ -->
+<div class="layout">
 
-<!-- ================= SCENE 01 — CLOTH ================= -->
-<section class="scene" data-scale="1.5" data-ox="50" data-oy="44">
-  <div class="scene__sticky">
-    <div class="scene__img"><img src="images/cloth.jpg" alt="washed canvas surface"></div>
-    <div class="scene__num">01&nbsp;&nbsp;<b>/</b>&nbsp;&nbsp;the cloth</div>
-    <div class="scene__meta">shop and son — the cloth</div>
-    <div class="callout">
-      <div class="callout__tag"><span class="rule"></span>01 · the cloth</div>
-      <div class="callout__h">garment-dyed canvas</div>
-      <!-- EDIT: fabric description -->
-      <p class="callout__p">piece-dyed, then washed down so each jacket fades on its own. the mottled, sun-bleached surface is the point, not a flaw to iron out.</p>
+  <!-- ── LEFT: image stage ── -->
+  <div class="layout__left">
+    <div class="img-stage">
+
+      <!-- one slot per scene; JS sets src from the IMAGES map below -->
+      <div class="img-slot active" data-slot="hero">
+        <img alt="washed canvas blouson, front view">
+      </div>
+      <div class="img-slot" data-slot="cloth">
+        <img alt="washed canvas surface detail">
+      </div>
+      <div class="img-slot" data-slot="closure">
+        <img alt="two-way zip and snap collar">
+      </div>
+      <div class="img-slot" data-slot="pocket">
+        <img alt="double-entry pocket, open">
+      </div>
+      <div class="img-slot" data-slot="cut">
+        <img alt="boxy cropped fit, worn">
+      </div>
+      <div class="img-slot" data-slot="inside">
+        <img alt="striped lining and inner pocket">
+      </div>
+
+      <div class="img-vignette"></div>
+      <div class="img-num" id="imgNum">&nbsp;</div>
+      <div class="img-label" id="imgLabel">shop and son — drop 01</div>
     </div>
   </div>
-</section>
 
-<!-- ================= SCENE 02 — CLOSURE ================= -->
-<section class="scene" data-scale="1.85" data-ox="50" data-oy="30">
-  <div class="scene__sticky">
-    <div class="scene__img"><img src="images/closure.jpg" alt="two-way zip and stand collar"></div>
-    <div class="scene__num">02&nbsp;&nbsp;<b>/</b>&nbsp;&nbsp;the closure</div>
-    <div class="scene__meta">shop and son — closure</div>
-    <div class="callout">
-      <div class="callout__tag"><span class="rule"></span>02 · the closure</div>
-      <div class="callout__h">two-way zip, snap collar</div>
+  <!-- ── RIGHT: scrollable panels ── -->
+  <div class="layout__right">
+
+    <!-- ─── INTRO PANEL ─── -->
+    <section class="panel panel--intro" data-slot="hero" data-num="" data-label="drop 01">
+      <!-- mobile image -->
+      <img class="panel__mobile-img" data-slot="hero" alt="washed canvas blouson, front view">
+
+      <div class="panel__kicker">
+        <span class="dot"></span>
+        <!-- EDIT: week / status -->
+        week 01 · pre-order open
+      </div>
+
+      <!-- EDIT: piece name -->
+      <h1 class="panel__h">washed canvas<br>blouson</h1>
+
+      <!-- EDIT: price -->
+      <div class="panel__price"><s>$285</s> $245 — pre-order price</div>
+      <!-- EDIT: ship date -->
+      <div class="panel__ship">ships week of ___ · limited run</div>
+
+      <!-- EDIT: one-line intro -->
+      <p class="panel__p" style="margin-top:22px">japanese moleskine, pigment-coated and washed down, cut boxy, built around a double-entry pocket. one of five pieces — a new one each week.</p>
+
+      <div class="scrollcue"><span class="bar"></span>scroll to look closer</div>
+    </section>
+
+    <!-- ─── PANEL 01 · THE CLOTH ─── -->
+    <section class="panel" data-slot="cloth" data-num="01 / the cloth" data-label="01 · the cloth">
+      <!-- mobile image -->
+      <img class="panel__mobile-img" data-slot="cloth" alt="washed canvas surface detail">
+
+      <div class="panel__tag"><span class="rule"></span>01 · the cloth</div>
+
+      <!-- EDIT: cloth heading -->
+      <h2 class="panel__h">moleskine,<br>380 gsm, japan</h2>
+
+      <!-- EDIT: cloth description -->
+      <p class="panel__p">a pigment coat applied to one side of the raw roll, then washed back down. the result has the mottled, aged feel of something that has already lived — without waiting years for it.</p>
+
+      <!-- EDIT: cloth spec note -->
+      <div class="panel__note"><span class="bullet">◆</span>moleskine · 380 gsm · sourced from japan · wash finished</div>
+    </section>
+
+    <!-- ─── PANEL 02 · THE CLOSURE ─── -->
+    <section class="panel" data-slot="closure" data-num="02 / the closure" data-label="02 · the closure">
+      <img class="panel__mobile-img" data-slot="closure" alt="two-way zip and snap collar">
+
+      <div class="panel__tag"><span class="rule"></span>02 · the closure</div>
+
+      <!-- EDIT: closure heading -->
+      <h2 class="panel__h">two-way zip,<br>snap collar</h2>
+
       <!-- EDIT: closure description -->
-      <p class="callout__p">a full two-way zip with twin pulls, snapped down at the hem. the stand collar folds to a single snap. hardware left raw and unbranded.</p>
-    </div>
-  </div>
-</section>
+      <p class="panel__p">a riri two-way zip running the full length, with cobrax snaps at the collar and hem. the stand collar folds flat or wears open — one snap either way.</p>
 
-<!-- ================= SCENE 03 — DOUBLE-ENTRY POCKET ================= -->
-<section class="scene" data-scale="1.95" data-ox="52" data-oy="44">
-  <div class="scene__sticky">
-    <div class="scene__img"><img src="images/pocket.jpg" alt="double-entry pocket, open"></div>
-    <div class="scene__num">03&nbsp;&nbsp;<b>/</b>&nbsp;&nbsp;the detail</div>
-    <div class="scene__meta">shop and son — the detail</div>
-    <div class="callout">
-      <div class="callout__tag"><span class="rule"></span>03 · the detail</div>
-      <div class="callout__h">the double-entry pocket</div>
-      <!-- EDIT: signature feature description -->
-      <p class="callout__p">one curved seam, two ways in — drop a hand straight down, or reach across into the same hidden pouch. hand-finished, no flap, nothing announced.</p>
-    </div>
-  </div>
-</section>
+      <!-- EDIT: closure spec note -->
+      <div class="panel__note"><span class="bullet">◆</span>riri two-way zip · cobrax snaps</div>
+    </section>
 
-<!-- ================= SCENE 04 — THE CUT ================= -->
-<section class="scene" data-scale="1.32" data-ox="50" data-oy="40">
-  <div class="scene__sticky">
-    <div class="scene__img"><img src="images/cut.jpg" alt="boxy cropped fit, worn"></div>
-    <div class="scene__num">04&nbsp;&nbsp;<b>/</b>&nbsp;&nbsp;the cut</div>
-    <div class="scene__meta">shop and son — the cut</div>
-    <div class="callout">
-      <div class="callout__tag"><span class="rule"></span>04 · the cut</div>
-      <div class="callout__h">boxy, cropped, easy</div>
-      <!-- EDIT: silhouette description -->
-      <p class="callout__p">a wide, square body cropped at the hip, sized to layer over a shirt and sit away from you. analog proportions, not slim.</p>
-    </div>
-  </div>
-</section>
+    <!-- ─── PANEL 03 · THE DETAIL ─── -->
+    <section class="panel" data-slot="pocket" data-num="03 / the detail" data-label="03 · the detail">
+      <img class="panel__mobile-img" data-slot="pocket" alt="double-entry pocket, open">
 
-<!-- ================= SCENE 05 — INSIDE ================= -->
-<section class="scene" data-scale="1.8" data-ox="46" data-oy="46">
-  <div class="scene__sticky">
-    <div class="scene__img"><img src="images/inside.jpg" alt="striped lining and inner pocket"></div>
-    <div class="scene__num">05&nbsp;&nbsp;<b>/</b>&nbsp;&nbsp;inside</div>
-    <div class="scene__meta">shop and son — inside</div>
-    <div class="callout">
-      <div class="callout__tag"><span class="rule"></span>05 · inside</div>
-      <div class="callout__h">striped lining + inner pocket</div>
+      <div class="panel__tag"><span class="rule"></span>03 · the detail</div>
+
+      <!-- EDIT: pocket heading -->
+      <h2 class="panel__h">the double-entry<br>pocket</h2>
+
+      <!-- EDIT: pocket description -->
+      <p class="panel__p">one opening, two functions — the upper entrance for your hands, the lower for your things. no flap, no hardware, nothing announced from the outside.</p>
+
+      <!-- EDIT: pocket spec note -->
+      <div class="panel__note"><span class="bullet">◆</span>double-entry side pockets · hands + belongings</div>
+    </section>
+
+    <!-- ─── PANEL 04 · THE CUT ─── -->
+    <section class="panel" data-slot="cut" data-num="04 / the cut" data-label="04 · the cut">
+      <img class="panel__mobile-img" data-slot="cut" alt="boxy cropped fit, worn">
+
+      <div class="panel__tag"><span class="rule"></span>04 · the cut</div>
+
+      <!-- EDIT: cut heading -->
+      <h2 class="panel__h">boxy, cropped, easy</h2>
+
+      <!-- EDIT: cut description -->
+      <p class="panel__p">boxy through the body, cropped at the hip, dropped shoulder. a straight yoke seam across the back with two darts — room to move without losing the shape.</p>
+
+      <!-- EDIT: cut spec note -->
+      <div class="panel__note"><span class="bullet">◆</span>dropped shoulder · back yoke seam · 2 darts for mobility</div>
+    </section>
+
+    <!-- ─── PANEL 05 · INSIDE ─── -->
+    <section class="panel" data-slot="inside" data-num="05 / inside" data-label="05 · inside">
+      <img class="panel__mobile-img" data-slot="inside" alt="striped lining and inner pocket">
+
+      <div class="panel__tag"><span class="rule"></span>05 · inside</div>
+
+      <!-- EDIT: lining heading -->
+      <h2 class="panel__h">striped cupro<br>lining</h2>
+
       <!-- EDIT: lining description -->
-      <p class="callout__p">lined in striped cotton shirting with a single interior pocket. the inside is finished as carefully as the face you see.</p>
-    </div>
-  </div>
-</section>
+      <p class="panel__p">striped yarn-dyed cupro at 102 gsm — silky against the skin, light in the hand. the inside is finished as carefully as the face you see.</p>
 
-<!-- ================= SPECS ================= -->
+      <!-- EDIT: lining spec note -->
+      <div class="panel__note"><span class="bullet">◆</span>striped yarn-dyed cupro · 102 gsm</div>
+    </section>
+
+  </div><!-- /layout__right -->
+</div><!-- /layout -->
+
+<!-- ═══════════════ FULL-WIDTH SPECS ═══════════════ -->
 <section class="specs">
   <div class="specs__head">
     <h2>the piece, in full</h2>
@@ -283,21 +575,21 @@ body{
   </div>
   <dl>
     <!-- EDIT: any spec value below -->
-    <div class="spec-row"><dt>silhouette</dt><dd>boxy blouson · dropped shoulder · cropped length</dd></div>
-    <div class="spec-row"><dt>closure</dt><dd>two-way front zip with twin pulls · snap-fastening stand collar</dd></div>
-    <div class="spec-row"><dt>pockets</dt><dd>two double-entry side pockets · one interior pocket</dd></div>
-    <div class="spec-row"><dt>shell</dt><dd>garment-dyed cotton canvas</dd></div>
-    <div class="spec-row"><dt>lining</dt><dd>striped cotton shirting</dd></div>
-    <div class="spec-row"><dt>hardware</dt><dd>raw nickel · unbranded</dd></div>
-    <div class="spec-row"><dt>composition</dt><dd>100% cotton — shell &amp; lining</dd></div>
-    <div class="spec-row"><dt>care</dt><dd>cold wash · hang dry · expected to fade</dd></div>
+    <div class="spec-row"><dt>silhouette</dt><dd>boxy blouson · dropped shoulder · cropped length · back yoke seam with 2 darts</dd></div>
+    <div class="spec-row"><dt>closure</dt><dd>riri two-way front zip · cobrax snap-fastening stand collar</dd></div>
+    <div class="spec-row"><dt>pockets</dt><dd>two double-entry side pockets (hands + belongings) · one interior pocket</dd></div>
+    <div class="spec-row"><dt>shell</dt><dd>moleskine · 380 gsm · sourced from japan · pigment-coated, wash finished</dd></div>
+    <div class="spec-row"><dt>lining</dt><dd>striped yarn-dyed cupro · 102 gsm</dd></div>
+    <div class="spec-row"><dt>hardware</dt><dd>riri two-way zip · cobrax snaps</dd></div>
+    <div class="spec-row"><dt>composition</dt><dd>shell: cotton · lining: cupro</dd></div>
+    <div class="spec-row"><dt>care</dt><dd>cold wash · hang dry · expected to age</dd></div>
   </dl>
 </section>
 
-<!-- ================= PREORDER CTA ================= -->
+<!-- ═══════════════ PREORDER CTA ═══════════════ -->
 <section class="cta">
   <div class="cta__inner">
-    <div class="kicker"><span class="dot"></span>pre-order · week 01</div>
+    <div class="kicker center"><span class="dot"></span>pre-order · week 01</div>
     <!-- EDIT: piece name (CTA) -->
     <h2>reserve yours</h2>
     <!-- EDIT: price -->
@@ -309,7 +601,7 @@ body{
   </div>
 </section>
 
-<!-- ================= DROP SCHEDULE ================= -->
+<!-- ═══════════════ DROP SCHEDULE ═══════════════ -->
 <section class="sched">
   <h3>five weeks, five pieces</h3>
   <div class="sched__grid">
@@ -324,60 +616,133 @@ body{
 
 <footer class="foot">
   <span>shop and son</span>
-  <span><em>garmor for your armoire</em></span>
+  <span><em>garments for your armoire</em></span>
   <span>pre-order mockup · drop 01 · © 2026</span>
 </footer>
 
 <script>
-(function(){
-  var scenes = Array.prototype.slice.call(document.querySelectorAll('.scene'));
-  var prog = document.getElementById('prog');
-  var hudpct = document.getElementById('hudpct');
-  var vh = window.innerHeight;
+(function () {
 
-  var data = scenes.map(function(s){
-    return {
-      el:s,
-      img:s.querySelector('.scene__img'),
-      callout:s.querySelector('.callout'),
-      scale:parseFloat(s.dataset.scale)||1.5,
-      ox:parseFloat(s.dataset.ox)||50,
-      oy:parseFloat(s.dataset.oy)||50
-    };
+  /* ════════════════════════════════════════════════════════
+     IMAGE MAP — update src paths here to swap scene images.
+  
+     ════════════════════════════════════════════════════════ */
+  var IMAGES = {
+    hero:    'images/hero.jpg',     /* EDIT: intro / hero shot          */
+    cloth:   'images/cloth.jpg',    /* EDIT: 01 · the cloth             */
+    closure: 'images/closure.jpg',  /* EDIT: 02 · the closure           */
+    pocket:  'images/pocket.jpg',   /* EDIT: 03 · the detail / pocket   */
+    cut:     'images/cut.jpg',      /* EDIT: 04 · the cut               */
+    inside:  'images/inside.jpg',   /* EDIT: 05 · inside / lining       */
+  };
+
+  /* inject src values from the map above */
+  document.querySelectorAll('.img-slot[data-slot]').forEach(function (slot) {
+    var key = slot.dataset.slot;
+    if (IMAGES[key]) slot.querySelector('img').src = IMAGES[key];
   });
 
-  function clamp(v,a,b){return v<a?a:v>b?b:v;}
+  /* inject mobile inline images from the same map */
+  document.querySelectorAll('.panel__mobile-img[data-slot]').forEach(function (img) {
+    var key = img.dataset.slot;
+    if (IMAGES[key]) img.src = IMAGES[key];
+  });
 
-  var ticking=false;
-  function update(){
-    ticking=false;
-    var doc=document.documentElement;
-    var st=window.pageYOffset||doc.scrollTop;
-    var max=(doc.scrollHeight-vh)||1;
-    var p=clamp(st/max,0,1);
-    prog.style.width=(p*100)+'%';
-    hudpct.textContent=(p*100<10?'0':'')+Math.round(p*100)+'%';
+  /* ── references ── */
+  var prog    = document.getElementById('prog');
+  var hudpct  = document.getElementById('hudpct');
+  var imgNum  = document.getElementById('imgNum');
+  var imgLabel = document.getElementById('imgLabel');
+  var panels  = Array.prototype.slice.call(
+    document.querySelectorAll('.layout__right .panel[data-slot]')
+  );
 
-    for(var i=0;i<data.length;i++){
-      var d=data[i];
-      var r=d.el.getBoundingClientRect();
-      var total=r.height-vh;
-      var prgr=clamp((-r.top)/(total||1),0,1);
-      var e=prgr<0?0:prgr>1?1:prgr;
-      var sc=1+(d.scale-1)*e;
-      d.img.style.transformOrigin=d.ox+'% '+d.oy+'%';
-      d.img.style.transform='scale('+sc.toFixed(4)+')';
-      if(r.top<vh*0.5 && r.bottom>vh*0.5 && e>0.1){
-        d.callout.classList.add('in');
-      }else if(r.bottom<vh*0.2 || r.top>vh*0.8){
-        d.callout.classList.remove('in');
+  /* slot elements keyed by slot name */
+  var slots = {};
+  document.querySelectorAll('.img-slot[data-slot]').forEach(function (el) {
+    slots[el.dataset.slot] = el;
+  });
+
+  var activeSlot = 'hero';
+  var vh = window.innerHeight;
+
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+
+  /* switch the left image to a new slot */
+  function activateSlot(key, num, label) {
+    if (key === activeSlot) return;
+    var prev = slots[activeSlot];
+    var next = slots[key];
+    if (!next) return;
+    if (prev) prev.classList.remove('active');
+    next.classList.add('active');
+    activeSlot = key;
+    imgNum.textContent  = num   || '';
+    imgLabel.textContent = label || 'shop and son — drop 01';
+  }
+
+  /* scroll progress bar + HUD % */
+  function updateProgress() {
+    var doc = document.documentElement;
+    var st  = window.pageYOffset || doc.scrollTop;
+    var max = (doc.scrollHeight - vh) || 1;
+    var p   = clamp(st / max, 0, 1);
+    prog.style.width = (p * 100) + '%';
+    hudpct.textContent = (p * 100 < 10 ? '0' : '') + Math.round(p * 100) + '%';
+  }
+
+  /* parallax zoom on the active left image */
+  function updateParallax() {
+    var layoutRight = document.querySelector('.layout__right');
+    if (!layoutRight) return;
+    var r    = layoutRight.getBoundingClientRect();
+    var total = layoutRight.offsetHeight - vh;
+    var prog  = clamp((-r.top) / (total || 1), 0, 1);
+    /* subtle: scale from 1.0 to 1.06 over the full layout scroll */
+    var sc = 1 + 0.06 * prog;
+    var active = document.querySelector('.img-slot.active img');
+    if (active) active.style.transform = 'scale(' + sc.toFixed(4) + ')';
+  }
+
+  /* determine which panel is in the center of the viewport
+     and switch the left image accordingly */
+  function updateActivePanel() {
+    var mid = vh * 0.5;
+    for (var i = 0; i < panels.length; i++) {
+      var r = panels[i].getBoundingClientRect();
+      /* trigger when the panel centre crosses the viewport centre */
+      if (r.top <= mid && r.bottom > mid) {
+        activateSlot(
+          panels[i].dataset.slot,
+          panels[i].dataset.num  || '',
+          panels[i].dataset.label || ''
+        );
+        break;
       }
     }
   }
-  function onScroll(){ if(!ticking){ticking=true;requestAnimationFrame(update);} }
-  window.addEventListener('scroll',onScroll,{passive:true});
-  window.addEventListener('resize',function(){vh=window.innerHeight;update();});
-  update();
+
+  var ticking = false;
+  function onScroll() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(function () {
+        ticking = false;
+        updateProgress();
+        updateActivePanel();
+        updateParallax();
+      });
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () { vh = window.innerHeight; onScroll(); });
+
+  /* init */
+  updateProgress();
+  updateActivePanel();
+  updateParallax();
+
 })();
 </script>
 </body>
