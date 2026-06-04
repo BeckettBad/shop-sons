@@ -328,13 +328,15 @@ body {
 
 .spec-scroll__left {
   padding:10vh 52px 10vh;
-  border-right:1px solid var(--hair);
+  /* no border-right — video lives on the page, not in a box */
 }
 
 .spec-scroll__right {
   background:#ffffff;
-  position:relative;
-  min-height:300px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px 32px;
 }
 
 .specs__head {
@@ -365,15 +367,20 @@ body {
 
 /* ── analog video player ── */
 .video-stage {
-  position:absolute; inset:0;
-  background:#ffffff;
+  position:relative;
+  /* stage wraps tightly to the video frame */
+  max-height:calc(100vh - var(--hh) - 80px);
+  aspect-ratio:9/16;
+  width:auto;
   cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  outline:none;
 }
 .video-stage video {
-  width:100%; height:100%;
   display:block;
-  object-fit:contain; /* full frame visible — no cropping */
+  width:100%; height:100%;
+  object-fit:cover;
+  outline:none;
 }
 
 /* pause overlay — visible at start and when paused */
@@ -560,8 +567,9 @@ dt[data-scroll-to]:hover::after {
 
   /* spec section: stack on mobile */
   .spec-scroll { grid-template-columns:1fr; }
-  .spec-scroll__left { border-right:none; padding:48px 22px 40px; }
-  .spec-scroll__right { min-height:70vw; }
+  .spec-scroll__left { padding:48px 22px 40px; }
+  .spec-scroll__right { padding:0 22px 40px; }
+  .video-stage { max-height:none; width:100%; }
   .spec-row { grid-template-columns:100px 1fr; gap:10px; padding:12px 0; }
 
   /* mobile header: 60px height, hide dropdowns */
