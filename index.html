@@ -264,6 +264,29 @@ body {
 }
 .spec-row dd { font-size:16px; line-height:1.5; max-width:640px; }
 
+/* linkable spec terms */
+dt[data-scroll-to] {
+  cursor:pointer;
+  display:inline-flex; align-items:center; gap:6px;
+  transition:color .2s;
+}
+dt[data-scroll-to]:hover { color:var(--ink); }
+dt[data-scroll-to]::after {
+  content:'↑';
+  font-size:9px; letter-spacing:0;
+  color:var(--accent);
+  opacity:0;
+  transition:opacity .2s, transform .2s;
+  transform:translateY(2px);
+}
+dt[data-scroll-to]:hover::after {
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ensure panels land below the fixed header on programmatic scroll */
+.panel { scroll-margin-top:var(--hh); }
+
 /* CTA */
 .cta {
   background:var(--paper-2);
@@ -405,7 +428,7 @@ body {
 
 <!-- ═══════════════ HEADER ═══════════════ -->
 <header class="hud">
-  <div>shop and son</div>
+  <div><a href="https://shopandson.com/" target="_blank" rel="noopener">Shop And Son</a></div>
   <div class="hud__r">
     <span>pre-order</span>
     <span>drop 01 / 05</span>
@@ -574,13 +597,14 @@ body {
   </div>
   <dl>
     <!-- EDIT: any spec value below -->
-    <div class="spec-row"><dt>silhouette</dt><dd>boxy blouson · dropped shoulder · cropped length · back yoke seam with 2 darts</dd></div>
-    <div class="spec-row"><dt>closure</dt><dd>riri two-way front zip · cobrax snap-fastening stand collar</dd></div>
-    <div class="spec-row"><dt>pockets</dt><dd>two double-entry side pockets (hands + belongings) · one interior pocket</dd></div>
-    <div class="spec-row"><dt>shell</dt><dd>moleskine · 380 gsm · sourced from japan · pigment-coated, wash finished</dd></div>
-    <div class="spec-row"><dt>lining</dt><dd>striped yarn-dyed cupro · 102 gsm</dd></div>
-    <div class="spec-row"><dt>hardware</dt><dd>riri two-way zip · cobrax snaps</dd></div>
-    <div class="spec-row"><dt>composition</dt><dd>shell: cotton · lining: cupro</dd></div>
+    <!-- data-scroll-to targets the matching scene panel — see IMAGES map in <script> for slot names -->
+    <div class="spec-row"><dt data-scroll-to="inside">silhouette</dt><dd>boxy blouson · dropped shoulder · cropped length · back yoke seam with 2 darts</dd></div>
+    <div class="spec-row"><dt data-scroll-to="pocket">closure</dt><dd>riri two-way front zip · cobrax snap-fastening stand collar</dd></div>
+    <div class="spec-row"><dt data-scroll-to="cut">pockets</dt><dd>two double-entry side pockets (hands + belongings) · one interior pocket</dd></div>
+    <div class="spec-row"><dt data-scroll-to="cloth">shell</dt><dd>moleskine · 380 gsm · sourced from japan · pigment-coated, wash finished</dd></div>
+    <div class="spec-row"><dt data-scroll-to="closure">lining</dt><dd>striped yarn-dyed cupro · 102 gsm</dd></div>
+    <div class="spec-row"><dt data-scroll-to="pocket">hardware</dt><dd>riri two-way zip · cobrax snaps</dd></div>
+    <div class="spec-row"><dt data-scroll-to="cloth">composition</dt><dd>shell: cotton · lining: cupro</dd></div>
     <div class="spec-row"><dt>care</dt><dd>cold wash · hang dry · expected to age</dd></div>
   </dl>
 </section>
@@ -741,6 +765,16 @@ body {
   updateProgress();
   updateActivePanel();
   updateParallax();
+
+  /* ── spec row click → scroll to matching scene panel ── */
+  document.querySelectorAll('dt[data-scroll-to]').forEach(function (dt) {
+    dt.addEventListener('click', function () {
+      var target = document.querySelector(
+        '.layout__right .panel[data-slot="' + dt.dataset.scrollTo + '"]'
+      );
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
 
 })();
 </script>
