@@ -324,7 +324,7 @@ body {
 .specs-wrap {
   display:grid;
   grid-template-columns:1fr 1fr;
-  align-items:start;
+  align-items:stretch; /* both columns same height */
   border-top:1px solid var(--hair);
 }
 
@@ -334,15 +334,10 @@ body {
 }
 
 .specs-right {
-  position:sticky;
-  top:var(--hh);
-  height:calc(100vh - var(--hh));
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:40px 52px;
-  gap:14px;
+  /* matches height of spec table — no fixed viewport height */
+  position:relative;
+  overflow:hidden;
+  min-height:320px;
 }
 
 .specs__head {
@@ -373,16 +368,15 @@ body {
 
 /* ── analog video player ── */
 .video-stage {
-  position:relative;
-  width:100%;
+  position:absolute; inset:0; /* fills .specs-right exactly */
   background:#111;
   cursor:pointer;
-  /* aspect ratio set in HTML via inline style to match actual video */
 }
 .video-stage video {
-  width:100%; display:block;
-  aspect-ratio:9/16; /* EDIT: change to 16/9 if landscape video */
-  object-fit:cover;
+  width:100%; height:100%;
+  display:block;
+  object-fit:cover; /* crops portrait frame to fill the container */
+  object-position:center top; /* favour the top of the frame */
 }
 
 /* pause overlay — visible at start and when paused */
@@ -406,10 +400,15 @@ body {
 }
 
 .video-hint {
+  position:absolute;
+  bottom:14px; left:18px;
+  z-index:4;
   font-family:var(--font); font-size:11px;
-  color:var(--ink-soft);
-  align-self:flex-start;
+  color:rgba(255,255,255,.55);
+  pointer-events:none;
 }
+.video-cover.playing + .video-hint,
+.video-stage:not(:has(.video-cover:not(.playing))) .video-hint { opacity:0; }
 
 /* linkable spec terms */
 dt[data-scroll-to] {
@@ -565,7 +564,7 @@ dt[data-scroll-to]:hover::after {
   /* specs: stack on mobile */
   .specs-wrap { grid-template-columns:1fr; }
   .specs-left { border-right:none; padding:40px 22px 32px; }
-  .specs-right { position:relative; top:auto; height:auto; padding:0 22px 40px; }
+  .specs-right { min-height:60vw; }
   .spec-row { grid-template-columns:110px 1fr; gap:12px; padding:12px 0; }
 
   /* mobile header: 60px height, hide dropdowns */
@@ -847,15 +846,15 @@ dt[data-scroll-to]:hover::after {
         Recommended format: MP4, H.264, 1080p max.
         EDIT: change video aspect-ratio style to 16/9 if landscape.
       -->
-      <video id="pieceVideo" preload="metadata" playsinline>
+      <video id="pieceVideo" preload="metadata" playsinline muted>
         <source src="videos/piece.mp4" type="video/mp4">
       </video>
       <!-- analog pause indicator: two bars shown when paused, hidden when playing -->
       <div class="video-cover" id="videoCover">
         <div class="video-pause-mark"><span></span><span></span></div>
       </div>
+      <p class="video-hint" id="videoHint">press to play</p>
     </div>
-    <p class="video-hint">press to play</p>
   </div>
 
 </section>
@@ -1025,23 +1024,27 @@ dt[data-scroll-to]:hover::after {
   var pieceVideo = document.getElementById('pieceVideo');
   var videoCover = document.getElementById('videoCover');
   var videoStage = document.getElementById('videoStage');
+  var videoHint  = document.getElementById('videoHint');
+
+  function setPlaying(playing) {
+    if (playing) {
+      videoCover.classList.add('playing');
+      if (videoHint) videoHint.style.opacity = '0';
+    } else {
+      videoCover.classList.remove('playing');
+      if (videoHint) videoHint.style.opacity = '';
+    }
+  }
 
   /* play / pause on stage click */
   if (videoStage) {
     videoStage.addEventListener('click', function () {
       if (!pieceVideo) return;
-      if (pieceVideo.paused) {
-        pieceVideo.play();
-        videoCover.classList.add('playing');
-      } else {
-        pieceVideo.pause();
-        videoCover.classList.remove('playing');
-      }
+      if (pieceVideo.paused) { pieceVideo.play(); setPlaying(true); }
+      else                   { pieceVideo.pause(); setPlaying(false); }
     });
     if (pieceVideo) {
-      pieceVideo.addEventListener('ended', function () {
-        videoCover.classList.remove('playing');
-      });
+      pieceVideo.addEventListener('ended', function () { setPlaying(false); });
     }
   }
 
@@ -1054,7 +1057,7 @@ dt[data-scroll-to]:hover::after {
         /* timestamp mapped → seek video and play */
         pieceVideo.currentTime = ts;
         pieceVideo.play();
-        videoCover.classList.add('playing');
+        setPlaying(true);
         /* scroll the specs section into view so the video is visible */
         var specsWrap = document.querySelector('.specs-wrap');
         if (specsWrap) specsWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
