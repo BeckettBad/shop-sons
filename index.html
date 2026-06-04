@@ -14,40 +14,50 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>shop and son — drop 01</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
+  /* exact values from shopandson.com stylesheet */
   --paper:    #ffffff;
-  --paper-2:  #f5f5f5;
-  --ink:      #1a1a1a;
-  --ink-soft: #767676;
+  --paper-2:  #eae9e7;
+  --ink:      #000000;
+  --ink-soft: #666666;
   --accent:   #8a5234;
-  --line:     #1a1a1a;
-  --hair:     rgba(0,0,0,.1);
-  --mono: ui-monospace,"SFMono-Regular",Menlo,"Courier New",monospace;
-  --sans: "Helvetica Neue",Helvetica,Arial,sans-serif;
-  --hh: 60px; /* header height */
+  --line:     #000000;
+  --hair:     rgba(0,0,0,.15);
+  --font:     "Anonymous Pro", monospace;
+  --hh:       80px; /* --site-header-height-desktop: 80px */
+  --hh-mob:   60px; /* --site-header-height-mobile: 60px  */
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior:auto; }
+body, body * { text-transform:lowercase; } /* matches shopandson.com rule */
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--sans);
+  font-family: var(--font);
   font-weight: 400;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
 
 /* ══════════════════════════════════════════
-   SITE HEADER — matches shopandson.com
+   SITE HEADER — exact match shopandson.com
+   font: Anonymous Pro · height: 80px desktop
+   border: none (--site-header-border-opacity: 0)
    ══════════════════════════════════════════ */
 .site-header {
   position:fixed; top:0; left:0; right:0; z-index:80;
   height:var(--hh);
-  background:#fff;
-  border-bottom:1px solid var(--hair);
+  background:#ffffff;
+  /* no border — shopandson.com border-opacity is 0 */
 }
 
 .site-nav {
@@ -55,52 +65,55 @@ body {
   grid-template-columns:1fr auto 1fr;
   align-items:center;
   height:100%;
-  padding:0 20px;
+  padding:0 4rem; /* --page-margin-desktop: 4rem */
 }
 
 /* nav lists */
 .nav-list {
   list-style:none;
-  display:flex; align-items:center; gap:20px;
+  display:flex; align-items:center;
+  gap:var(--site-header-primary-menu-spacing, 12px);
+  gap:12px;
 }
-.nav-list--right { justify-content:flex-end; }
+.nav-list--right { justify-content:flex-end; gap:16px; }
 
 /* all nav links */
 .nav-item { position:relative; }
 .nav-item > a {
-  font-family:var(--sans);
-  font-size:11.5px; letter-spacing:.06em;
-  color:var(--ink);
-  text-decoration:none; text-transform:lowercase;
+  font-family:var(--font);
+  font-size:13px; /* --font-ui-size-desktop */
+  font-weight:400;
+  letter-spacing:0em; /* --body-letter-spacing */
+  color:#000000; /* --color-menu-text */
+  text-decoration:none;
   padding:4px 0; display:block;
   transition:color .2s;
 }
-.nav-item > a:hover { color:var(--ink-soft); }
+.nav-item > a:hover { color:#666666; }
 
-/* pre-order link accented */
-.nav-item--preorder > a { color:var(--accent); }
-.nav-item--preorder > a:hover { color:var(--ink); }
+/* pre-order link — only distinction is a subtle underline */
+.nav-item--preorder > a { text-decoration:underline; text-underline-offset:3px; }
+.nav-item--preorder > a:hover { color:#666666; text-decoration:underline; }
 
 /* logo */
 .nav-logo {
   display:flex; justify-content:center; align-items:center;
   text-decoration:none;
 }
-.nav-logo img { height:24px; width:auto; display:block; }
+.nav-logo img { height:26px; width:auto; display:block; }
 
-/* dropdowns */
+/* dropdowns — white bg, no rounded corners, subtle shadow */
 .nav-dropdown {
   list-style:none;
   position:absolute;
-  top:calc(100% + 1px);
-  left:-14px;
-  min-width:210px;
-  background:#fff;
-  border:1px solid var(--hair);
-  border-top:none;
-  padding:10px 0 12px;
+  top:100%;
+  left:0;
+  min-width:220px;
+  background:#ffffff; /* --color-menu-dropdown-background */
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+  padding:12px 0 16px;
   opacity:0; visibility:hidden; pointer-events:none;
-  transition:opacity .18s ease, visibility .18s ease;
+  transition:opacity .2s ease, visibility .2s ease;
   z-index:100;
 }
 .nav-item:hover .nav-dropdown {
@@ -108,33 +121,37 @@ body {
 }
 .nav-dropdown li a {
   display:block;
-  padding:5px 16px;
-  font-family:var(--sans);
-  font-size:11px; letter-spacing:.04em;
-  color:var(--ink);
-  text-decoration:none; text-transform:lowercase;
+  padding:6px 20px;
+  font-family:var(--font);
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:0em;
+  color:#000000; /* --color-menu-dropdown-text */
+  text-decoration:none;
   transition:color .15s;
 }
-.nav-dropdown li a:hover { color:var(--ink-soft); }
+.nav-dropdown li a:hover { color:#666666; }
 
 /* preorder dropdown extras */
 .nav-dropdown .drop-label {
-  padding:6px 16px 3px;
-  font-family:var(--mono); font-size:10px; letter-spacing:.06em;
+  padding:8px 20px 4px;
+  font-size:12px;
   color:var(--accent);
+  font-family:var(--font);
 }
 .nav-dropdown .drop-soon {
-  padding:4px 16px;
-  font-family:var(--mono); font-size:10px; letter-spacing:.05em;
-  color:#bbb;
+  padding:4px 20px;
+  font-size:12px;
+  color:#aaa;
+  font-family:var(--font);
 }
 .nav-dropdown .drop-rule {
-  height:1px; background:var(--hair); margin:8px 16px;
+  height:1px; background:rgba(0,0,0,.1); margin:8px 20px;
 }
 
 .prog {
-  position:fixed; left:0; top:var(--hh); height:1px;
-  background:var(--accent); z-index:81; width:0; opacity:.7;
+  position:fixed; left:0; top:var(--hh); height:2px;
+  background:var(--accent); z-index:81; width:0; opacity:.6;
 }
 
 /* ══════════════════════════════════════════
@@ -193,7 +210,7 @@ body {
 /* scene number — top left of image */
 .img-num {
   position:absolute; top:22px; left:24px; z-index:3;
-  font-family:var(--mono); font-size:10.5px; letter-spacing:.08em;
+  font-family:var(--font); font-size:10.5px; letter-spacing:.08em;
   color:rgba(239,233,221,.6);
   transition:opacity .5s ease;
 }
@@ -201,7 +218,7 @@ body {
 /* label — bottom left of image */
 .img-label {
   position:absolute; bottom:24px; left:24px; z-index:3;
-  font-family:var(--mono); font-size:10px; letter-spacing:.09em;
+  font-family:var(--font); font-size:10px; letter-spacing:.09em;
   color:rgba(239,233,221,.65);
   transition:opacity .5s ease;
 }
@@ -223,7 +240,7 @@ body {
 
 /* panel elements */
 .panel__kicker {
-  font-family:var(--mono); font-size:11px; letter-spacing:.06em;
+  font-family:var(--font); font-size:11px; letter-spacing:.06em;
   color:var(--ink-soft); margin-bottom:20px;
   display:flex; align-items:center; gap:10px;
 }
@@ -233,14 +250,14 @@ body {
 }
 
 .panel__tag {
-  font-family:var(--mono); font-size:10.5px; letter-spacing:.08em;
+  font-family:var(--font); font-size:10.5px; letter-spacing:.08em;
   color:var(--ink-soft); margin-bottom:30px;
   display:flex; align-items:center; gap:13px;
 }
 .panel__tag .rule { width:18px; height:1px; background:var(--hair); flex-shrink:0; }
 
 .panel__h {
-  font-family:var(--sans); font-weight:500;
+  font-family:var(--font); font-weight:500;
   letter-spacing:-.014em; line-height:1.04;
   font-size:clamp(24px,3.2vw,42px);
   margin-bottom:20px;
@@ -253,7 +270,7 @@ body {
 
 .panel__note {
   margin-top:30px;
-  font-family:var(--mono); font-size:11px; letter-spacing:.05em;
+  font-family:var(--font); font-size:11px; letter-spacing:.05em;
   color:var(--ink-soft);
   display:flex; align-items:center; gap:9px;
 }
@@ -267,19 +284,19 @@ body {
 }
 
 .panel__price {
-  font-family:var(--mono); font-size:13px; letter-spacing:.04em;
+  font-family:var(--font); font-size:13px; letter-spacing:.04em;
   margin:18px 0 8px;
 }
 .panel__price s { opacity:.38; margin-right:9px; }
 
 .panel__ship {
-  font-family:var(--mono); font-size:11px; letter-spacing:.04em;
+  font-family:var(--font); font-size:11px; letter-spacing:.04em;
   color:var(--ink-soft);
 }
 
 /* scroll cue */
 .scrollcue {
-  font-family:var(--mono); font-size:11px; letter-spacing:.05em;
+  font-family:var(--font); font-size:11px; letter-spacing:.05em;
   margin-top:36px;
   display:flex; align-items:center; gap:10px;
   color:var(--ink-soft);
@@ -315,12 +332,12 @@ body {
   padding-bottom:18px; flex-wrap:wrap; gap:16px;
 }
 .specs__head h2 {
-  font-family:var(--sans); font-weight:500;
+  font-family:var(--font); font-weight:500;
   letter-spacing:-.01em;
   font-size:clamp(26px,4vw,44px); line-height:1.02;
 }
 .specs__head .meta {
-  font-family:var(--mono); font-size:11px;
+  font-family:var(--font); font-size:11px;
   letter-spacing:.04em; text-align:right;
   line-height:1.9; color:var(--ink-soft);
 }
@@ -331,7 +348,7 @@ body {
   align-items:baseline;
 }
 .spec-row dt {
-  font-family:var(--mono); font-size:11.5px;
+  font-family:var(--font); font-size:11.5px;
   letter-spacing:.04em; color:var(--ink-soft);
 }
 .spec-row dd { font-size:16px; line-height:1.5; max-width:640px; }
@@ -350,6 +367,7 @@ dt[data-scroll-to]::after {
   opacity:0;
   transition:opacity .2s, transform .2s;
   transform:translateY(2px);
+  text-transform:none;
 }
 dt[data-scroll-to]:hover::after {
   opacity:1;
@@ -369,7 +387,7 @@ dt[data-scroll-to]:hover::after {
 .cta__inner { max-width:640px; margin:0 auto; }
 
 .kicker {
-  font-family:var(--mono); font-size:11.5px; letter-spacing:.06em;
+  font-family:var(--font); font-size:11.5px; letter-spacing:.06em;
   color:var(--ink-soft);
   display:flex; align-items:center; gap:11px; margin-bottom:16px;
 }
@@ -377,30 +395,30 @@ dt[data-scroll-to]:hover::after {
 .kicker .dot { width:6px; height:6px; background:var(--accent); border-radius:50%; }
 
 .cta h2 {
-  font-family:var(--sans); font-weight:500;
+  font-family:var(--font); font-weight:500;
   letter-spacing:-.015em;
   font-size:clamp(30px,6vw,60px); line-height:1.0;
 }
 .cta__price {
-  font-family:var(--mono); font-size:14px;
+  font-family:var(--font); font-size:14px;
   letter-spacing:.04em; margin:22px 0 6px;
 }
 .cta__price s { opacity:.45; margin-right:11px; }
 .cta__sub {
-  font-family:var(--mono); font-size:12px;
+  font-family:var(--font); font-size:12px;
   letter-spacing:.04em; color:var(--ink-soft);
 }
 .btn {
   display:inline-block; margin-top:30px;
   border:1px solid var(--ink); color:var(--paper); background:var(--ink);
-  font-family:var(--mono); font-size:12.5px; letter-spacing:.06em;
+  font-family:var(--font); font-size:12.5px; letter-spacing:.06em;
   padding:16px 40px; cursor:pointer;
   transition:background .25s,color .25s;
 }
 .btn:hover { background:transparent; color:var(--ink); }
 .cta__note {
   margin-top:20px;
-  font-family:var(--mono); font-size:11px;
+  font-family:var(--font); font-size:11px;
   letter-spacing:.03em; color:var(--ink-soft);
 }
 
@@ -411,7 +429,7 @@ dt[data-scroll-to]:hover::after {
   border-top:1px solid var(--hair);
 }
 .sched h3 {
-  font-family:var(--mono); font-size:11.5px;
+  font-family:var(--font); font-size:11.5px;
   letter-spacing:.06em; margin-bottom:24px; color:var(--ink-soft);
 }
 .sched__grid {
@@ -423,17 +441,17 @@ dt[data-scroll-to]:hover::after {
   display:flex; flex-direction:column; justify-content:space-between;
 }
 .sched__cell .wk {
-  font-family:var(--mono); font-size:10.5px;
+  font-family:var(--font); font-size:10.5px;
   letter-spacing:.05em; color:var(--ink-soft);
 }
 .sched__cell .nm {
-  font-family:var(--sans); font-weight:500;
+  font-family:var(--font); font-weight:500;
   font-size:16px; line-height:1.1; letter-spacing:-.005em;
 }
 .sched__cell.active { background:var(--ink); color:var(--paper); }
 .sched__cell.active .wk { color:var(--accent); }
 .sched__cell .st {
-  font-family:var(--mono); font-size:9.5px;
+  font-family:var(--font); font-size:9.5px;
   letter-spacing:.04em; color:var(--ink-soft);
 }
 .sched__cell.active .st { color:rgba(239,233,221,.6); }
@@ -444,7 +462,7 @@ dt[data-scroll-to]:hover::after {
   border-top:1px solid var(--line);
   display:flex; justify-content:space-between;
   flex-wrap:wrap; gap:14px;
-  font-family:var(--mono); font-size:11px;
+  font-family:var(--font); font-size:11px;
   letter-spacing:.04em; color:var(--ink-soft);
 }
 .foot em { font-style:italic; }
@@ -486,11 +504,17 @@ dt[data-scroll-to]:hover::after {
   .sched__grid { grid-template-columns:1fr 1fr; }
   .sched__cell { min-height:94px; }
 
-  /* mobile header: hide dropdowns, collapse to logo + links */
+  /* mobile header: 60px height, hide dropdowns */
+  .site-header { height:var(--hh-mob); }
+  .site-nav { padding:0 1.6rem; }
   .nav-dropdown { display:none; }
-  .nav-list { gap:14px; }
-  .nav-item > a { font-size:10.5px; }
-  .nav-logo img { height:18px; }
+  .nav-list { gap:12px; }
+  .nav-item > a { font-size:12px; }
+  .nav-logo img { height:20px; }
+  .layout { margin-top:var(--hh-mob); }
+  .layout__left { top:var(--hh-mob); height:calc(100vh - var(--hh-mob)); }
+  .panel { min-height:calc(100vh - var(--hh-mob)); }
+  .prog { top:var(--hh-mob); }
 }
 </style>
 </head>
@@ -566,7 +590,7 @@ dt[data-scroll-to]:hover::after {
     <ul class="nav-list nav-list--right">
       <li class="nav-item"><a href="https://shopandson.com/account">account</a></li>
       <li class="nav-item"><a href="https://shopandson.com/cart">cart</a></li>
-      <li class="nav-item" style="color:var(--ink-soft);font-size:11px;letter-spacing:.05em;font-family:var(--mono)" id="hudpct">00%</li>
+      <li class="nav-item" style="color:var(--ink-soft);font-size:11px;letter-spacing:.05em;font-family:var(--font)" id="hudpct">00%</li>
     </ul>
 
   </nav>
