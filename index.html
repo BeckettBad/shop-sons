@@ -99,9 +99,8 @@ body {
 .nav-logo {
   display:flex; justify-content:center; align-items:center;
   text-decoration:none;
-  height:100%;
 }
-.nav-logo img { height:100%; width:auto; display:block; }
+.nav-logo img { height:var(--hh); width:auto; display:block; }
 
 /* dropdowns — white bg, no rounded corners, subtle shadow */
 .nav-dropdown {
@@ -581,7 +580,7 @@ dt[data-scroll-to]:hover::after {
   .nav-dropdown { display:none; }
   .nav-list { gap:12px; }
   .nav-item > a { font-size:12px; }
-  .nav-logo img { height:100%; }
+  .nav-logo img { height:var(--hh-mob); }
   .layout { margin-top:var(--hh-mob); }
   .layout__left { top:var(--hh-mob); height:calc(100vh - var(--hh-mob)); }
   .panel { min-height:calc(100vh - var(--hh-mob)); }
