@@ -277,7 +277,7 @@ body {
 .panel__note .bullet { color:var(--accent); font-size:9px; }
 
 /* intro panel overrides */
-.panel--intro { padding-top:9vh; }
+.panel--intro { padding-top:9vh; justify-content:flex-start; }
 .panel--intro .panel__h {
   font-size:clamp(28px,4.2vw,54px);
   margin-bottom:14px;
@@ -558,6 +558,8 @@ dt[data-scroll-to]:hover::after {
   font-family:var(--font); font-size:13px; letter-spacing:.05em;
   color:var(--ink-soft); white-space:nowrap;
 }
+
+
 .scroll-hint__arrow {
   display:inline-block;
   color:var(--accent);
