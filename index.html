@@ -374,7 +374,6 @@ body {
   max-height:calc(100vh - var(--hh) - 80px);
   aspect-ratio:9/16;
   width:auto;
-  cursor:pointer;
   flex-shrink:0;
   outline:none;
 }
@@ -385,36 +384,7 @@ body {
   outline:none;
 }
 
-/* pause overlay — visible at start and when paused */
-.video-cover {
-  position:absolute; inset:0;
-  display:flex; align-items:center; justify-content:center;
-  transition:opacity .25s ease;
-}
-.video-cover.playing {
-  opacity:0; pointer-events:none;
-}
 
-/* two thin vertical bars — the analog "paused" mark */
-.video-pause-mark {
-  display:flex; gap:5px; align-items:center;
-}
-.video-pause-mark span {
-  display:block;
-  width:2px; height:22px;
-  background:rgba(0,0,0,.35);
-}
-
-.video-hint {
-  position:absolute;
-  bottom:14px; left:18px;
-  z-index:4;
-  font-family:var(--font); font-size:11px;
-  color:var(--ink-soft);
-  pointer-events:none;
-}
-.video-cover.playing + .video-hint,
-.video-stage:not(:has(.video-cover:not(.playing))) .video-hint { opacity:0; }
 
 /* linkable spec terms */
 dt[data-scroll-to] {
@@ -555,7 +525,7 @@ dt[data-scroll-to]:hover::after {
 .scroll-hint {
   display:flex; flex-direction:column; gap:8px;
   position:absolute; bottom:52px; left:50%; transform:translateX(-50%);
-  font-family:var(--font); font-size:20px; letter-spacing:.05em;
+  font-family:var(--font); font-size:13px; letter-spacing:.05em;
   color:var(--ink-soft); white-space:nowrap;
 }
 
@@ -563,10 +533,10 @@ dt[data-scroll-to]:hover::after {
 .scroll-hint__arrow {
   display:inline-block;
   color:var(--accent);
-  font-size:36px; line-height:1;
+  font-size:16px; line-height:1;
   animation:bob 1.8s ease-in-out infinite;
 }
-{animation:bob}
+
 @keyframes bob {
   0%, 100% { transform:translateY(0); }
   50%       { transform:translateY(7px); }
@@ -577,12 +547,12 @@ dt[data-scroll-to]:hover::after {
   list-style:none; margin-top:14px; max-width:320px;
 }
 .panel__bullets li {
-  font-size:14px; line-height:2; color:#444;
+  font-size:14px; line-height:2; color:var(--ink-soft);
   padding-left:16px; position:relative;
 }
 .panel__bullets li::before {
   content:'—'; position:absolute; left:0;
-  color:#444;
+  color:var(--hair);
 }
 
 /* footer */
@@ -614,14 +584,6 @@ dt[data-scroll-to]:hover::after {
     border-bottom:1px solid var(--hair);
   }
   .panel--intro { padding-top:88px; min-height:100svh; }
-  .scroll-hint {
-    position:static;
-    left:auto;
-    transform:none;
-    margin-top:40px;
-    align-self:center;
-    text-align:center;
-  }
 
   .panel__mobile-img {
     display:block;
@@ -931,11 +893,7 @@ dt[data-scroll-to]:hover::after {
       <video id="pieceVideo" preload="metadata" playsinline muted poster="images/video-poster.jpg">
         <source src="videos/piece.mp4" type="video/mp4">
       </video>
-      <!-- analog pause indicator -->
-      <div class="video-cover" id="videoCover">
-        <div class="video-pause-mark"><span></span><span></span></div>
-      </div>
-      <p class="video-hint" id="videoHint">press to play</p>
+
     </div>
   </div>
 
@@ -1104,31 +1062,7 @@ dt[data-scroll-to]:hover::after {
      To add timestamps later: set data-timestamp="12.5" etc. on each dt.
   ────────────────────────────────────────────────────────────── */
   var pieceVideo = document.getElementById('pieceVideo');
-  var videoCover = document.getElementById('videoCover');
   var videoStage = document.getElementById('videoStage');
-  var videoHint  = document.getElementById('videoHint');
-
-  function setPlaying(playing) {
-    if (playing) {
-      videoCover.classList.add('playing');
-      if (videoHint) videoHint.style.opacity = '0';
-    } else {
-      videoCover.classList.remove('playing');
-      if (videoHint) videoHint.style.opacity = '';
-    }
-  }
-
-  /* play / pause on stage click */
-  if (videoStage) {
-    videoStage.addEventListener('click', function () {
-      if (!pieceVideo) return;
-      if (pieceVideo.paused) { pieceVideo.play(); setPlaying(true); }
-      else                   { pieceVideo.pause(); setPlaying(false); }
-    });
-    if (pieceVideo) {
-      pieceVideo.addEventListener('ended', function () { setPlaying(false); });
-    }
-  }
 
   /* spec row clicks */
   document.querySelectorAll('dt[data-scroll-to]').forEach(function (dt) {
@@ -1139,7 +1073,6 @@ dt[data-scroll-to]:hover::after {
         /* timestamp mapped → seek video and play */
         pieceVideo.currentTime = ts;
         pieceVideo.play();
-        setPlaying(true);
         /* scroll the specs section into view so the video is visible */
         var specsWrap = document.querySelector('.specs-wrap');
         if (specsWrap) specsWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1169,20 +1102,21 @@ dt[data-scroll-to]:hover::after {
     alert('pre-order flow goes here — placeholder for the mockup.');
   });
 
-  /* ── auto-pause when video scrolls out of view ──
-     Uses IntersectionObserver — pauses as soon as less than
-     20% of the video stage is visible. User must press to replay.
+  /* ── auto-play / pause on scroll ──
+     Plays when ≥30% of the stage is visible, pauses otherwise.
+     Resumes from the same point when scrolled back in.
   ────────────────────────────────────────────────── */
   if (videoStage && pieceVideo) {
-    var pauseObserver = new IntersectionObserver(function (entries) {
+    var scrollObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        if (!entry.isIntersecting && !pieceVideo.paused) {
+        if (entry.isIntersecting) {
+          pieceVideo.play();
+        } else {
           pieceVideo.pause();
-          setPlaying(false);
         }
       });
-    }, { threshold: 0.2 });
-    pauseObserver.observe(videoStage);
+    }, { threshold: 0.3 });
+    scrollObserver.observe(videoStage);
   }
 
 })();
