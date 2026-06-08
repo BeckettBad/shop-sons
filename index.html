@@ -554,9 +554,9 @@ dt[data-scroll-to]:hover::after {
 /* scroll hint — animated arrow */
 .scroll-hint {
   display:flex; flex-direction:column; gap:8px;
-  margin-top:140px;
+  position:absolute; bottom:52px; left:50%; transform:translateX(-50%);
   font-family:var(--font); font-size:13px; letter-spacing:.05em;
-  color:var(--ink-soft);
+  color:var(--ink-soft); white-space:nowrap;
 }
 .scroll-hint__arrow {
   display:inline-block;
