@@ -536,6 +536,7 @@ dt[data-scroll-to]:hover::after {
 .qty-row {
   display:flex; align-items:center; margin:0 0 14px;
 }
+
 .qty-btn {
   font-family:var(--font); font-size:16px; line-height:1;
   border:1px solid var(--hair); background:transparent; color:var(--ink);
@@ -548,6 +549,24 @@ dt[data-scroll-to]:hover::after {
   min-width:36px; text-align:center;
   border-top:1px solid var(--hair); border-bottom:1px solid var(--hair);
   height:32px; line-height:30px;
+}
+
+/* scroll hint — animated arrow */
+.scroll-hint {
+  display:flex; flex-direction:column; gap:8px;
+  margin-top:36px;
+  font-family:var(--font); font-size:11px; letter-spacing:.05em;
+  color:var(--ink-soft);
+}
+.scroll-hint__arrow {
+  display:inline-block;
+  color:var(--accent);
+  font-size:16px; line-height:1;
+  animation:bob 1.8s ease-in-out infinite;
+}
+@keyframes bob {
+  0%, 100% { transform:translateY(0); }
+  50%       { transform:translateY(7px); }
 }
 
 /* detail bullets */
@@ -762,36 +781,26 @@ dt[data-scroll-to]:hover::after {
       </div>
 
       <!-- EDIT: piece name -->
-      <h1 class="panel__h" style="text-transform:none">Washed Canvas Blouson</h1>
+      <h1 class="panel__h" style="text-transform:none">The Benny Blouson</h1>
 
       <!-- size selector -->
       <div class="size-opts" id="sizeOpts">
-        <button class="size-btn" data-size="S" data-price="245">s</button>
-        <button class="size-btn" data-size="M" data-price="245">m</button>
-        <button class="size-btn" data-size="L" data-price="245">l</button>
-        <button class="size-btn" data-size="XL" data-price="245">xl</button>
+        <button class="size-btn" data-size="S">s</button>
+        <button class="size-btn" data-size="M">m</button>
+        <button class="size-btn" data-size="L">l</button>
+        <button class="size-btn" data-size="XL">xl</button>
       </div>
 
-      <!-- quantity -->
-      <div class="qty-row">
-        <button class="qty-btn" id="qtyDown">−</button>
-        <span class="qty-val" id="qtyVal">1</span>
-        <button class="qty-btn" id="qtyUp">+</button>
-      </div>
-
-      <!-- EDIT: price (updated by size selection) -->
-      <div class="panel__price" id="introPrice"><s>$285</s> <span id="introPriceVal">$245</span> — pre-order price</div>
-
-      <!-- preorder button -->
-      <button class="btn" id="introPreorder">pre-order now</button>
+      <!-- preorder button — fixed price placeholder -->
+      <button class="btn" id="introPreorder" style="margin-top:20px">pre-order now · $495</button>
 
       <!-- EDIT: ship date -->
-      <div class="panel__ship" style="margin-top:14px">ships week of ___ · limited run</div>
+      <div class="panel__ship" style="margin-top:14px">ships in 6-8 weeks</div>
 
-      <!-- EDIT: one-line intro -->
-      <p class="panel__p" style="margin-top:22px">japanese moleskine, pigment-coated and washed down, cut boxy, built around a double-entry pocket. one of five pieces — a new one each week.</p>
-
-      <div class="scrollcue"><span class="bar"></span>scroll to look closer</div>
+      <div class="scroll-hint">
+        scroll for details
+        <span class="scroll-hint__arrow">↓</span>
+      </div>
     </section>
 
     <!-- ─── PANEL 01 · OUTER FABRIC ─── -->
@@ -1134,33 +1143,17 @@ dt[data-scroll-to]:hover::after {
   });
 
   /* ── size selector ── */
-  var sizeOpts     = document.getElementById('sizeOpts');
-  var introPriceVal = document.getElementById('introPriceVal');
-  var introPreorder = document.getElementById('introPreorder');
-
+  var sizeOpts = document.getElementById('sizeOpts');
   if (sizeOpts) {
     sizeOpts.addEventListener('click', function (e) {
       var btn = e.target.closest ? e.target.closest('.size-btn') : (e.target.classList.contains('size-btn') ? e.target : null);
       if (!btn) return;
       sizeOpts.querySelectorAll('.size-btn').forEach(function (b) { b.classList.remove('selected'); });
       btn.classList.add('selected');
-      if (introPriceVal) introPriceVal.textContent = '$' + btn.dataset.price;
     });
   }
 
-  /* ── quantity selector ── */
-  var qtyValEl = document.getElementById('qtyVal');
-  var qty = 1;
-  var qtyDownBtn = document.getElementById('qtyDown');
-  var qtyUpBtn   = document.getElementById('qtyUp');
-
-  if (qtyDownBtn) qtyDownBtn.addEventListener('click', function () {
-    if (qty > 1) { qty--; qtyValEl.textContent = qty; }
-  });
-  if (qtyUpBtn) qtyUpBtn.addEventListener('click', function () {
-    qty++; qtyValEl.textContent = qty;
-  });
-
+  var introPreorder = document.getElementById('introPreorder');
   if (introPreorder) introPreorder.addEventListener('click', function () {
     alert('pre-order flow goes here — placeholder for the mockup.');
   });
