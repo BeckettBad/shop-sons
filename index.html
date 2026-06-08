@@ -880,7 +880,7 @@ dt[data-scroll-to]:hover::after {
       <div class="spec-row"><dt data-scroll-to="cut"    data-timestamp="-1">pockets</dt><dd>two double-entry side pockets (hands + belongings) · one interior pocket</dd></div>
       <div class="spec-row"><dt data-scroll-to="cloth"  data-timestamp="-1">shell</dt><dd>moleskine · 380 gsm · sourced from japan · pigment-coated, wash finished</dd></div>
       <div class="spec-row"><dt data-scroll-to="closure" data-timestamp="-1">lining</dt><dd>striped yarn-dyed cupro · 102 gsm</dd></div>
-      <div class="spec-row"><dt data-scroll-to="pocket" data-timestamp="-1">hardware</dt><dd>riri two-way zip · cobrax snaps</dd></div>
+      <div class="spec-row"><dt data-scroll-to="pocket" data-timestamp="14.17">hardware</dt><dd>riri two-way zip · cobrax snaps</dd></div>
       <div class="spec-row"><dt data-scroll-to="cloth"  data-timestamp="-1">composition</dt><dd>shell: cotton · lining: cupro</dd></div>
       <div class="spec-row"><dt>care</dt><dd>cold wash · hang dry · expected to age</dd></div>
     </dl>
@@ -1074,7 +1074,7 @@ dt[data-scroll-to]:hover::after {
         pieceVideo.currentTime = ts;
         pieceVideo.play();
         /* scroll the specs section into view so the video is visible */
-        var specsWrap = document.querySelector('.specs-wrap');
+        var specsWrap = document.querySelector('.spec-scroll');
         if (specsWrap) specsWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } else {
         /* no timestamp yet → scroll to matching image panel */
