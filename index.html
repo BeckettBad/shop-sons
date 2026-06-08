@@ -519,6 +519,50 @@ dt[data-scroll-to]:hover::after {
 }
 .sched__cell.active .st { color:rgba(239,233,221,.6); }
 
+/* size selector */
+.size-opts {
+  display:flex; gap:6px; margin:20px 0 10px;
+}
+.size-btn {
+  font-family:var(--font); font-size:12px; letter-spacing:.05em;
+  border:1px solid var(--hair); background:transparent; color:var(--ink);
+  padding:8px 14px; cursor:pointer;
+  transition:border-color .15s, background .15s, color .15s;
+}
+.size-btn:hover { border-color:var(--ink); }
+.size-btn.selected { border-color:var(--ink); background:var(--ink); color:var(--paper); }
+
+/* quantity row */
+.qty-row {
+  display:flex; align-items:center; margin:0 0 14px;
+}
+.qty-btn {
+  font-family:var(--font); font-size:16px; line-height:1;
+  border:1px solid var(--hair); background:transparent; color:var(--ink);
+  width:32px; height:32px; cursor:pointer;
+  transition:border-color .15s;
+}
+.qty-btn:hover { border-color:var(--ink); }
+.qty-val {
+  font-family:var(--font); font-size:13px; letter-spacing:.04em;
+  min-width:36px; text-align:center;
+  border-top:1px solid var(--hair); border-bottom:1px solid var(--hair);
+  height:32px; line-height:30px;
+}
+
+/* detail bullets */
+.panel__bullets {
+  list-style:none; margin-top:14px; max-width:320px;
+}
+.panel__bullets li {
+  font-size:14px; line-height:2; color:var(--ink-soft);
+  padding-left:16px; position:relative;
+}
+.panel__bullets li::before {
+  content:'—'; position:absolute; left:0;
+  color:var(--hair);
+}
+
 /* footer */
 .foot {
   background:var(--paper); padding:38px 22px;
@@ -718,12 +762,31 @@ dt[data-scroll-to]:hover::after {
       </div>
 
       <!-- EDIT: piece name -->
-      <h1 class="panel__h">washed canvas<br>blouson</h1>
+      <h1 class="panel__h" style="text-transform:none">Washed Canvas Blouson</h1>
 
-      <!-- EDIT: price -->
-      <div class="panel__price"><s>$285</s> $245 — pre-order price</div>
+      <!-- size selector -->
+      <div class="size-opts" id="sizeOpts">
+        <button class="size-btn" data-size="S" data-price="245">s</button>
+        <button class="size-btn" data-size="M" data-price="245">m</button>
+        <button class="size-btn" data-size="L" data-price="245">l</button>
+        <button class="size-btn" data-size="XL" data-price="245">xl</button>
+      </div>
+
+      <!-- quantity -->
+      <div class="qty-row">
+        <button class="qty-btn" id="qtyDown">−</button>
+        <span class="qty-val" id="qtyVal">1</span>
+        <button class="qty-btn" id="qtyUp">+</button>
+      </div>
+
+      <!-- EDIT: price (updated by size selection) -->
+      <div class="panel__price" id="introPrice"><s>$285</s> <span id="introPriceVal">$245</span> — pre-order price</div>
+
+      <!-- preorder button -->
+      <button class="btn" id="introPreorder">pre-order now</button>
+
       <!-- EDIT: ship date -->
-      <div class="panel__ship">ships week of ___ · limited run</div>
+      <div class="panel__ship" style="margin-top:14px">ships week of ___ · limited run</div>
 
       <!-- EDIT: one-line intro -->
       <p class="panel__p" style="margin-top:22px">japanese moleskine, pigment-coated and washed down, cut boxy, built around a double-entry pocket. one of five pieces — a new one each week.</p>
@@ -735,80 +798,77 @@ dt[data-scroll-to]:hover::after {
     <section class="panel" data-slot="cloth" data-num="01 / outer fabric" data-label="01 · outer fabric">
       <img class="panel__mobile-img" data-slot="cloth" alt="moleskine fabric surface">
 
-      <div class="panel__tag"><span class="rule"></span>01 · outer fabric</div>
-
       <!-- EDIT: cloth heading -->
-      <h2 class="panel__h">moleskine,<br>380 gsm, japan</h2>
+      <h2 class="panel__h">01 outer fabric</h2>
 
-      <!-- EDIT: cloth description -->
-      <p class="panel__p">a pigment coat applied to one side of the raw roll, then washed back down. the result has the mottled, aged feel of something that has already lived — without waiting years for it.</p>
-
-      <!-- EDIT: cloth spec note -->
-      <div class="panel__note"><span class="bullet">◆</span>moleskine · 380 gsm · sourced from japan · wash finished</div>
+      <!-- EDIT: cloth details -->
+      <ul class="panel__bullets">
+        <li>moleskine</li>
+        <li>sourced from japan</li>
+        <li>380 gsm</li>
+        <li>pigment coat applied, washed back down</li>
+      </ul>
     </section>
 
     <!-- ─── PANEL 02 · THE LINING ─── -->
     <section class="panel" data-slot="closure" data-num="02 / the lining" data-label="02 · the lining">
       <img class="panel__mobile-img" data-slot="closure" alt="striped cupro lining">
 
-      <div class="panel__tag"><span class="rule"></span>02 · the lining</div>
-
       <!-- EDIT: lining heading -->
-      <h2 class="panel__h">striped cupro<br>lining</h2>
+      <h2 class="panel__h">02 the lining</h2>
 
-      <!-- EDIT: lining description -->
-      <p class="panel__p">striped yarn-dyed cupro at 102 gsm — silky against the skin, light in the hand. the inside is finished as carefully as the face you see.</p>
-
-      <!-- EDIT: lining spec note -->
-      <div class="panel__note"><span class="bullet">◆</span>striped yarn-dyed cupro · 102 gsm · silky, smooth</div>
+      <!-- EDIT: lining details -->
+      <ul class="panel__bullets">
+        <li>striped yarn-dyed cupro</li>
+        <li>102 gsm</li>
+        <li>silky against the skin</li>
+      </ul>
     </section>
 
     <!-- ─── PANEL 03 · HARDWARE ─── -->
     <section class="panel" data-slot="pocket" data-num="03 / hardware" data-label="03 · hardware">
       <img class="panel__mobile-img" data-slot="pocket" alt="riri zip and cobrax snaps">
 
-      <div class="panel__tag"><span class="rule"></span>03 · hardware</div>
-
       <!-- EDIT: hardware heading -->
-      <h2 class="panel__h">riri zip,<br>cobrax snaps</h2>
+      <h2 class="panel__h">03 hardware</h2>
 
-      <!-- EDIT: hardware description -->
-      <p class="panel__p">a riri two-way zip running the full length, with cobrax snaps at the collar and hem. the stand collar folds flat or wears open — one snap either way.</p>
-
-      <!-- EDIT: hardware spec note -->
-      <div class="panel__note"><span class="bullet">◆</span>riri two-way zip · cobrax snaps</div>
+      <!-- EDIT: hardware details -->
+      <ul class="panel__bullets">
+        <li>riri two-way zip</li>
+        <li>cobrax snaps</li>
+        <li>stand collar — snap-fastening</li>
+      </ul>
     </section>
 
     <!-- ─── PANEL 04 · THE POCKET ─── -->
     <section class="panel" data-slot="cut" data-num="04 / the pocket" data-label="04 · the pocket">
       <img class="panel__mobile-img" data-slot="cut" alt="double-entry pocket detail">
 
-      <div class="panel__tag"><span class="rule"></span>04 · the pocket</div>
-
       <!-- EDIT: pocket heading -->
-      <h2 class="panel__h">the double-entry<br>pocket</h2>
+      <h2 class="panel__h">04 the pocket</h2>
 
-      <!-- EDIT: pocket description -->
-      <p class="panel__p">one opening, two functions — the upper entrance for your hands, the lower for your things. no flap, no hardware, nothing announced from the outside.</p>
-
-      <!-- EDIT: pocket spec note -->
-      <div class="panel__note"><span class="bullet">◆</span>double-entry side pockets · hands + belongings</div>
+      <!-- EDIT: pocket details -->
+      <ul class="panel__bullets">
+        <li>double-entry side pockets</li>
+        <li>upper entrance for hands</li>
+        <li>lower for belongings</li>
+        <li>no flap, no hardware</li>
+      </ul>
     </section>
 
     <!-- ─── PANEL 05 · THE BACK ─── -->
     <section class="panel" data-slot="inside" data-num="05 / the back" data-label="05 · the back">
       <img class="panel__mobile-img" data-slot="inside" alt="back yoke seam and darts">
 
-      <div class="panel__tag"><span class="rule"></span>05 · the back</div>
-
       <!-- EDIT: back heading -->
-      <h2 class="panel__h">straight yoke,<br>two darts</h2>
+      <h2 class="panel__h">05 the back</h2>
 
-      <!-- EDIT: back description -->
-      <p class="panel__p">a straight seam across the upper back with two darts — a clean silhouette from behind with real room to move. built for wear, not just for looking at.</p>
-
-      <!-- EDIT: back spec note -->
-      <div class="panel__note"><span class="bullet">◆</span>straight yoke seam · 2 darts for mobility</div>
+      <!-- EDIT: back details -->
+      <ul class="panel__bullets">
+        <li>straight yoke seam</li>
+        <li>two darts</li>
+        <li>clean silhouette, room to move</li>
+      </ul>
     </section>
 
   </div><!-- /layout__right -->
@@ -1071,6 +1131,38 @@ dt[data-scroll-to]:hover::after {
         if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
+  });
+
+  /* ── size selector ── */
+  var sizeOpts     = document.getElementById('sizeOpts');
+  var introPriceVal = document.getElementById('introPriceVal');
+  var introPreorder = document.getElementById('introPreorder');
+
+  if (sizeOpts) {
+    sizeOpts.addEventListener('click', function (e) {
+      var btn = e.target.closest ? e.target.closest('.size-btn') : (e.target.classList.contains('size-btn') ? e.target : null);
+      if (!btn) return;
+      sizeOpts.querySelectorAll('.size-btn').forEach(function (b) { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      if (introPriceVal) introPriceVal.textContent = '$' + btn.dataset.price;
+    });
+  }
+
+  /* ── quantity selector ── */
+  var qtyValEl = document.getElementById('qtyVal');
+  var qty = 1;
+  var qtyDownBtn = document.getElementById('qtyDown');
+  var qtyUpBtn   = document.getElementById('qtyUp');
+
+  if (qtyDownBtn) qtyDownBtn.addEventListener('click', function () {
+    if (qty > 1) { qty--; qtyValEl.textContent = qty; }
+  });
+  if (qtyUpBtn) qtyUpBtn.addEventListener('click', function () {
+    qty++; qtyValEl.textContent = qty;
+  });
+
+  if (introPreorder) introPreorder.addEventListener('click', function () {
+    alert('pre-order flow goes here — placeholder for the mockup.');
   });
 
   /* ── auto-pause when video scrolls out of view ──
