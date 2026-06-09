@@ -349,7 +349,9 @@ body {
 .specs__head h2 {
   font-family:var(--font); font-weight:400;
   font-size:clamp(20px,2.5vw,32px); line-height:1.02;
+  cursor:pointer; transition:color .2s;
 }
+.specs__head h2:hover { color:var(--ink-soft); }
 .specs__head .meta {
   font-family:var(--font); font-size:11px;
   text-align:right; line-height:1.9; color:var(--ink-soft);
@@ -1127,6 +1129,17 @@ dt.seq-active { color:var(--ink); }
   document.querySelectorAll('dt[data-seq]').forEach(function (dt) {
     dt.addEventListener('click', function () { startSeq(dt.dataset.seq, dt); });
   });
+
+  /* "the piece, in full" heading — reset video to start */
+  var specsHeading = document.querySelector('.specs__head h2');
+  if (specsHeading && pieceVideo) {
+    specsHeading.addEventListener('click', function () {
+      clearSeq();
+      seqSeeking = true;
+      pieceVideo.currentTime = 0;
+      pieceVideo.play();
+    });
+  }
 
   /* ── size selector ── */
   var sizeOpts = document.getElementById('sizeOpts');
