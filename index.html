@@ -386,26 +386,25 @@ body {
 
 
 
-/* linkable spec terms */
-dt[data-scroll-to] {
+/* interactive spec terms */
+dt[data-seq] {
   cursor:pointer;
   display:inline-flex; align-items:center; gap:6px;
   transition:color .2s;
 }
-dt[data-scroll-to]:hover { color:var(--ink); }
-dt[data-scroll-to]::after {
-  content:'↑';
-  font-size:9px; letter-spacing:0;
+dt[data-seq]:hover { color:var(--ink); }
+dt[data-seq]::after {
+  content:'▶';
+  font-size:7px; letter-spacing:0;
   color:var(--accent);
   opacity:0;
   transition:opacity .2s, transform .2s;
   transform:translateY(2px);
   text-transform:none;
 }
-dt[data-scroll-to]:hover::after {
-  opacity:1;
-  transform:translateY(0);
-}
+dt[data-seq]:hover::after,
+dt.seq-active::after { opacity:1; transform:translateY(0); }
+dt.seq-active { color:var(--ink); }
 
 /* ensure panels land below the fixed header on programmatic scroll */
 .panel { scroll-margin-top:var(--hh); }
@@ -871,17 +870,13 @@ dt[data-scroll-to]:hover::after {
       </div>
     </div>
     <dl>
-      <!--
-        data-timestamp → set to seconds when video timestamps are known (≥ 0 seeks + plays).
-        -1 = not mapped yet, falls back to scrolling to the image panel.
-      -->
-      <div class="spec-row"><dt data-scroll-to="inside" data-timestamp="-1">silhouette</dt><dd>boxy blouson · dropped shoulder · cropped length · back yoke seam with 2 darts</dd></div>
-      <div class="spec-row"><dt data-scroll-to="pocket" data-timestamp="-1">closure</dt><dd>riri two-way front zip · cobrax snap-fastening stand collar</dd></div>
-      <div class="spec-row"><dt data-scroll-to="cut"    data-timestamp="-1">pockets</dt><dd>two double-entry side pockets (hands + belongings) · one interior pocket</dd></div>
-      <div class="spec-row"><dt data-scroll-to="cloth"  data-timestamp="-1">shell</dt><dd>moleskine · 380 gsm · sourced from japan · pigment-coated, wash finished</dd></div>
-      <div class="spec-row"><dt data-scroll-to="closure" data-timestamp="-1">lining</dt><dd>striped yarn-dyed cupro · 102 gsm</dd></div>
-      <div class="spec-row"><dt data-scroll-to="pocket" data-timestamp="14.17">belt adjustors</dt><dd>more details to come</dd></div>
-      <div class="spec-row"><dt data-scroll-to="cloth"  data-timestamp="-1">composition</dt><dd>shell: cotton · lining: cupro</dd></div>
+      <div class="spec-row"><dt data-seq="silhouette">silhouette</dt><dd>boxy blouson · dropped shoulder · cropped length · back yoke seam with 2 darts</dd></div>
+      <div class="spec-row"><dt data-seq="closure">closure</dt><dd>riri two-way front zip · cobrax snap-fastening stand collar</dd></div>
+      <div class="spec-row"><dt data-seq="pockets">pockets</dt><dd>two double-entry side pockets (hands + belongings) · one interior pocket</dd></div>
+      <div class="spec-row"><dt data-seq="shell">shell</dt><dd>moleskine · 380 gsm · sourced from japan · pigment-coated, wash finished</dd></div>
+      <div class="spec-row"><dt data-seq="lining">lining</dt><dd>striped yarn-dyed cupro · 102 gsm</dd></div>
+      <div class="spec-row"><dt>belt adjusters</dt><dd>update with more info</dd></div>
+      <div class="spec-row"><dt data-seq="composition">composition</dt><dd>shell: cotton · lining: cupro</dd></div>
       <div class="spec-row"><dt>care</dt><dd>cold wash · hang dry · expected to age</dd></div>
     </dl>
   </div>
@@ -1056,34 +1051,81 @@ dt[data-scroll-to]:hover::after {
   updateActivePanel();
   updateParallax();
 
-  /* ── spec row click ──────────────────────────────────────────
-     If data-timestamp ≥ 0 → seek video to that second and play.
-     If data-timestamp = -1 (not mapped yet) → scroll to image panel.
-     To add timestamps later: set data-timestamp="12.5" etc. on each dt.
+  /* ── video sequence engine ────────────────────────────────────
+     SEQ maps each detail key to an array of {s, e} segments (seconds).
+     e: null → play to video end. Multi-segment sequences cut seamlessly.
+     To add a new detail: add an entry to SEQ and data-seq="key" on its dt.
   ────────────────────────────────────────────────────────────── */
   var pieceVideo = document.getElementById('pieceVideo');
   var videoStage = document.getElementById('videoStage');
 
-  /* spec row clicks */
-  document.querySelectorAll('dt[data-scroll-to]').forEach(function (dt) {
-    dt.addEventListener('click', function () {
-      var ts = parseFloat(dt.dataset.timestamp);
+  var FPS = 30;
+  function f(n) { return n / FPS; }
 
-      if (ts >= 0 && pieceVideo) {
-        /* timestamp mapped → seek video and play */
-        pieceVideo.currentTime = ts;
-        pieceVideo.play();
-        /* scroll the specs section into view so the video is visible */
-        var specsWrap = document.querySelector('.spec-scroll');
-        if (specsWrap) specsWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else {
-        /* no timestamp yet → scroll to matching image panel */
-        var target = document.querySelector(
-          '.layout__right .panel[data-slot="' + dt.dataset.scrollTo + '"]'
-        );
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  var SEQ = {
+    silhouette:  [{ s: f(1158), e: null   }],
+    closure:     [{ s: f(136),  e: null   }],
+    pockets:     [{ s: f(488),  e: f(526) }, { s: f(720), e: f(830) }],
+    shell:       [{ s: f(0),    e: null   }],
+    lining:      [{ s: f(425),  e: null   }],
+    composition: [{ s: f(0),    e: f(150) }, { s: f(425), e: f(485) }]
+  };
+
+  var activeSeq  = null;
+  var activeSeg  = 0;
+  var activeRow  = null;
+  var seqSeeking = false;
+
+  function clearSeq() {
+    activeSeq = null;
+    activeSeg = 0;
+    if (activeRow) { activeRow.classList.remove('seq-active'); activeRow = null; }
+  }
+
+  function startSeq(key, dtEl) {
+    if (!pieceVideo || !SEQ[key]) return;
+    clearSeq();
+    activeSeq  = SEQ[key];
+    activeSeg  = 0;
+    activeRow  = dtEl;
+    dtEl.classList.add('seq-active');
+    seqSeeking = true;
+    pieceVideo.currentTime = activeSeq[0].s;
+    pieceVideo.play();
+    var spec = document.querySelector('.spec-scroll');
+    if (spec) spec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  if (pieceVideo) {
+    /* reset seek-guard once a seek completes */
+    pieceVideo.addEventListener('seeked', function () { seqSeeking = false; });
+
+    /* watch for segment end and cut to next (or loop) */
+    pieceVideo.addEventListener('timeupdate', function () {
+      if (!activeSeq || seqSeeking) return;
+      var seg = activeSeq[activeSeg];
+      var end = (seg.e !== null) ? seg.e : pieceVideo.duration;
+      if (isNaN(end)) return;
+      if (pieceVideo.currentTime >= end - 0.15) {
+        seqSeeking = true;
+        activeSeg  = (activeSeg + 1) % activeSeq.length;
+        pieceVideo.currentTime = activeSeq[activeSeg].s;
       }
     });
+
+    /* fallback: natural end for e:null segments */
+    pieceVideo.addEventListener('ended', function () {
+      if (!activeSeq) return;
+      seqSeeking = true;
+      activeSeg  = (activeSeg + 1) % activeSeq.length;
+      pieceVideo.currentTime = activeSeq[activeSeg].s;
+      pieceVideo.play();
+    });
+  }
+
+  /* click handler */
+  document.querySelectorAll('dt[data-seq]').forEach(function (dt) {
+    dt.addEventListener('click', function () { startSeq(dt.dataset.seq, dt); });
   });
 
   /* ── size selector ── */
@@ -1103,8 +1145,8 @@ dt[data-scroll-to]:hover::after {
   });
 
   /* ── auto-play / pause on scroll ──
-     Plays when ≥30% of the stage is visible, pauses otherwise.
-     Resumes from the same point when scrolled back in.
+     Entering view: play (resumes from current position).
+     Leaving view: pause + clear any active sequence.
   ────────────────────────────────────────────────── */
   if (videoStage && pieceVideo) {
     var scrollObserver = new IntersectionObserver(function (entries) {
@@ -1113,6 +1155,7 @@ dt[data-scroll-to]:hover::after {
           pieceVideo.play();
         } else {
           pieceVideo.pause();
+          clearSeq();
         }
       });
     }, { threshold: 0.3 });
